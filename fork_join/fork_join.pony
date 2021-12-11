@@ -24,8 +24,11 @@ actor Coordinator[Input: Any #send, Output: Any #send]
 
     while true do
       // Determine if there is a batch for next worker, if not, end early
-      match _generator(mw)
-      | let batch: Array[Input] iso =>
+      // TODO: try to get this back to being able to bail immediately,
+      // with current "match violates capabilities" work-around, there will
+      // always be at least 1 worker created even if we don't need more than 1
+      (let batch, let more) = _generator(mw)
+
         // create worker
         let w = Worker[Input, Output](this, _worker_builder())
         _workers.set(w)
@@ -36,8 +39,8 @@ actor Coordinator[Input: Any #send, Output: Any #send]
         // Run down max workers
         mw = mw - 1
         if mw == 0 then break end
-      | NoMoreBatches =>
-        // There's no additional batches so, let's stop creating workers.
+
+      if not more then
         break
       end
     end
@@ -59,7 +62,7 @@ interface WorkerBuilder[Input: Any #send, Output: Any #send]
     """
 
 interface Generator[A: Any #send]
-  fun ref apply(workers_remaining: USize): (Array[A] iso^ | NoMoreBatches)
+  fun ref apply(workers_remaining: USize): (A^, Bool)
     """
     Called once per-worker to allow creation of a working set for the given
     worker. If no additional work is left to give out, returning
@@ -93,7 +96,7 @@ actor Worker[Input: Any #send, Output: Any #send]
     _coordinator = coordinator
     _notify = consume notify
 
-  be start(batch: Array[Input] iso) =>
+  be start(batch: Input) =>
     if not _running then
       _running = true
       _notify.init(this, consume batch)
@@ -117,7 +120,8 @@ actor Worker[Input: Any #send, Output: Any #send]
     _run_again()
 
 interface WorkerNotify[Input: Any #send, Output: Any #send]
-  fun ref init(worker: Worker[Input, Output] ref, work_set: Array[Input] iso)
+  // TODO: we don't need `worker` on `init`
+  fun ref init(worker: Worker[Input, Output] ref, work_set: Input)
     """
     Called when a worker first starts working. Followed by a called to `work`.
     `work_set` contains the initial input set for this worker to use as the
