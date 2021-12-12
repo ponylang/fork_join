@@ -72,7 +72,6 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       _accumulator._finish()
     end
 
-// TODO: Doesn't need to be public
 actor AccumulatorRunner[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
   let _accumulator: Accumulator[Output]
