@@ -17,7 +17,10 @@ class WorkerBuilder is fj.WorkerBuilder[USize, String]
 class Generator is fj.Generator[USize]
   let _rand: Rand = _rand.create()
 
-  fun ref apply(workers_remaining: USize): USize ? =>
+  fun ref init(workers: USize) =>
+    None
+
+  fun ref apply(): USize ? =>
     let x = _rand.next().usize()
     if (x % 1000) == 0 then
       error

@@ -16,29 +16,22 @@ class WorkerBuilder is fj.WorkerBuilder[Array[U8] iso, USize]
 
 class Generator is fj.Generator[Array[U8] iso]
   var _working_set: Array[U8] iso
+  var _distribution_set: Array[USize] = _distribution_set.create()
 
   new iso create(working_set: Array[U8] iso) =>
     _working_set = consume working_set
 
-  fun ref apply(workers_remaining: USize): Array[U8] iso^ ? =>
+  fun ref init(workers: USize) =>
+    _distribution_set = fj.EvenlySplitDataElements(_working_set.size(), workers)
+
+  fun ref apply(): Array[U8] iso^ ? =>
     if _working_set.size() == 0 then
       error
     end
 
-    let b = if workers_remaining > 1 then
-      let bs = if workers_remaining > _working_set.size() then
-        1
-      else
-        _working_set.size() / workers_remaining
-      end
-
-      (let b', _working_set) = (consume _working_set).chop(bs)
-      consume b'
-    else
-      // This is the last worker, give it the remaining working set
-      _working_set = recover iso Array[U8] end
-    end
-    consume b
+    let distribution_amount = _distribution_set.shift()?
+    (let batch, _working_set) = (consume _working_set).chop(distribution_amount)
+    consume batch
 
 class Accumulator is fj.Accumulator[Array[U8] iso, USize]
   var _total: USize = 0
