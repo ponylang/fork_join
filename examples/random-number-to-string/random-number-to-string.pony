@@ -17,8 +17,12 @@ class WorkerBuilder is fj.WorkerBuilder[USize, String]
 class Generator is fj.Generator[USize]
   let _rand: Rand = _rand.create()
 
-  fun ref apply(workers_remaining: USize): (USize, Bool) =>
-    (_rand.next().usize(), true)
+  fun ref apply(workers_remaining: USize): USize ? =>
+    let x = _rand.next().usize()
+    if (x % 1000) == 0 then
+      error
+    end
+    x
 
 class Accumulator is fj.Accumulator[String]
   let _strings: Array[String] = _strings.create()
@@ -28,6 +32,7 @@ class Accumulator is fj.Accumulator[String]
     _out = out
 
   fun ref collect(result: String) =>
+    _out.print("got... " + result)
     _strings.push(result)
 
   fun ref finished() =>
@@ -38,9 +43,9 @@ class Accumulator is fj.Accumulator[String]
 class USizeToString is fj.WorkerNotify[USize, String]
   var _usize: USize = 0
 
-  fun ref init(worker: fj.Worker[USize, String] ref, work_set: USize) =>
+  fun ref receive(work_set: USize) =>
     _usize = work_set
 
-  fun ref work(worker: fj.Worker[USize, String] ref) =>
-    worker.done(_usize.string())
+  fun ref process(worker: fj.Worker[USize, String] ref) =>
+    worker.deliver(_usize.string())
 

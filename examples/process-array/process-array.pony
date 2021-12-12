@@ -20,10 +20,10 @@ class Generator is fj.Generator[Array[U8] iso]
   new iso create(working_set: Array[U8] iso) =>
     _working_set = consume working_set
 
-  fun ref apply(workers_remaining: USize): (Array[U8] iso^, Bool) =>
-    //if _working_set.size() == 0 then
-    //  return NoMoreBatches
-    //end
+  fun ref apply(workers_remaining: USize): Array[U8] iso^ ? =>
+    if _working_set.size() == 0 then
+      error
+    end
 
     let b = if workers_remaining > 1 then
       let bs = if workers_remaining > _working_set.size() then
@@ -38,7 +38,7 @@ class Generator is fj.Generator[Array[U8] iso]
       // This is the last worker, give it the remaining working set
       _working_set = recover iso Array[U8] end
     end
-    (consume b, _working_set.size() != 0)
+    consume b
 
 class Accumulator is fj.Accumulator[USize]
   var _total: USize = 0
@@ -56,14 +56,14 @@ class Accumulator is fj.Accumulator[USize]
 class Adder is fj.WorkerNotify[Array[U8] iso, USize]
   var _working_set: Array[U8] = _working_set.create()
 
-  fun ref init(worker: fj.Worker[Array[U8] iso, USize] ref, work_set: Array[U8] iso) =>
+  fun ref receive(work_set: Array[U8] iso) =>
     _working_set = consume work_set
 
-  fun ref work(worker: fj.Worker[Array[U8] iso, USize] ref) =>
+  fun ref process(worker: fj.Worker[Array[U8] iso, USize] ref) =>
     var total: USize = 0
 
     for i in _working_set.values() do
       total = total + i.usize()
     end
 
-    worker.done(total)
+    worker.deliver(total)

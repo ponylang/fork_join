@@ -1,11 +1,13 @@
 use "collections"
 use @ponyint_sched_cores[I32]()
+use @printf[I32](fmt: Pointer[U8] tag, ...)
 
 actor Coordinator[Input: Any #send, Output: Any #send]
   let _worker_builder: WorkerBuilder[Input, Output]
   let _generator: Generator[Input]
-  let _accumulator: Accumulator[Output]
+  let _accumulator: AccumulatorRunner[Input, Output]
   let _workers: SetIs[Worker[Input, Output]] = _workers.create()
+  let _max_workers: USize
 
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
     generator: Generator[Input] iso,
@@ -14,46 +16,88 @@ actor Coordinator[Input: Any #send, Output: Any #send]
   =>
     _worker_builder = consume worker_builder
     _generator = consume generator
-    _accumulator = consume accumulator
+    _accumulator = AccumulatorRunner[Input, Output](consume accumulator, this)
 
-    var mw = if max_workers > 0 then
+    _max_workers = if max_workers > 0 then
       max_workers
     else
       @ponyint_sched_cores().usize()
     end
 
+    var mw = _max_workers
     while true do
-      // Determine if there is a batch for next worker, if not, end early
-      // TODO: try to get this back to being able to bail immediately,
-      // with current "match violates capabilities" work-around, there will
-      // always be at least 1 worker created even if we don't need more than 1
-      (let batch, let more) = _generator(mw)
+      // create worker
+      let w = Worker[Input, Output](this, _worker_builder())
+      _workers.set(w)
 
-        // create worker
-        let w = Worker[Input, Output](this, _worker_builder())
-        _workers.set(w)
+      // request data for the worker
+      request(w)
 
-        // start the worker
-        w.start(consume batch)
-
-        // Run down max workers
-        mw = mw - 1
-        if mw == 0 then break end
-
-      if not more then
-        break
-      end
+      // Run down max workers
+      mw = mw - 1
+      if mw == 0 then break end
     end
 
   // TODO: should be private
-  be done(worker: Worker[Input, Output], result: Output) =>
-    _accumulator.collect(consume result)
+  be receive(result: Output) =>
+    // TODO: remove this indirection. Let workers know about the accumulator directly
+    _accumulator.receive(consume result)
+
+  // TODO: should be private
+  be request(worker: Worker[Input, Output]) =>
     if _workers.contains(worker) then
-      _workers.unset(worker)
-      if _workers.size() == 0 then
-        _accumulator.finished()
+      try
+        let batch = _generator(_max_workers)?
+        worker.receive(consume batch)
+      else
+        // there's no additional work to do
+        _workers.unset(worker)
+        // TODO: maybe this should be somewhere else
+        if _workers.size() == 0 then
+          _accumulator._finish()
+        end
       end
+    else
+      // TODO: this should never happen
+      None
     end
+
+  // TODO: should be private
+  be finish() =>
+    // send message to each worker to stop working
+    for worker in _workers.values() do
+      worker.terminate()
+    end
+
+  be finished(worker: Worker[Input, Output]) =>
+    """
+    A worker ended early as requested by coordinator. Remove it from list.
+    """
+    _workers.unset(worker)
+    // TODO: maybe this should be somewhere else
+    if _workers.size() == 0 then
+      _accumulator._finish()
+    end
+
+actor AccumulatorRunner[Input: Any #send, Output: Any #send]
+  let _coordinator: Coordinator[Input, Output]
+  let _accumulator: Accumulator[Output]
+
+  new create(accumulator: Accumulator[Output] iso,
+    coordinator: Coordinator[Input, Output])
+  =>
+    _accumulator = consume accumulator
+    _coordinator = coordinator
+
+  // TODO: should be private
+  be receive(result: Output) =>
+    _accumulator.collect(consume result)
+
+  be _finish() =>
+    _accumulator.finished()
+
+  fun ref finish() =>
+    _coordinator.finish()
 
 interface WorkerBuilder[Input: Any #send, Output: Any #send]
   fun ref apply(): WorkerNotify[Input, Output] iso^
@@ -62,16 +106,14 @@ interface WorkerBuilder[Input: Any #send, Output: Any #send]
     """
 
 interface Generator[A: Any #send]
-  fun ref apply(workers_remaining: USize): (A^, Bool)
+  fun ref apply(workers: USize): A^ ?
     """
-    Called once per-worker to allow creation of a working set for the given
-    worker. If no additional work is left to give out, returning
-    `NoMoreBatches` will end worker creation.
+    Called each time a worker needs data.
 
-    `workers_remaining` is the number of workers left waiting for work.
+    In case it is needed to evently distribute work, the total number of workers processing data is provided in `workers`.
+
+    If not additional data is available, `error` should be called.
     """
-
-primitive NoMoreBatches
 
 interface Accumulator[A: Any #send]
   fun ref collect(result: A)
@@ -89,6 +131,7 @@ actor Worker[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
   let _notify: WorkerNotify[Input, Output]
   var _running: Bool = false
+  var _early_termination_requested: Bool = false
 
   new create(coordinator: Coordinator[Input, Output],
     notify: WorkerNotify[Input, Output] iso)
@@ -96,22 +139,28 @@ actor Worker[Input: Any #send, Output: Any #send]
     _coordinator = coordinator
     _notify = consume notify
 
-  be start(batch: Input) =>
-    if not _running then
-      _running = true
-      _notify.init(this, consume batch)
-      _notify.work(this)
+  be receive(batch: Input) =>
+    if not _early_termination_requested then
+      _notify.receive(consume batch)
+      _notify.process(this)
     end
 
   be _run_again() =>
-    // should do some guard here
-    _notify.work(this)
+    if not _early_termination_requested then
+      _notify.process(this)
+    end
 
-  fun ref done(result: Output) =>
+  // TODO: should be private
+  be terminate() =>
+    _early_termination_requested = true
+    _coordinator.finished(this)
+
+  fun ref deliver(result: Output) =>
     """
     Called to stop processing and return a result
     """
-    _coordinator.done(this, consume result)
+    _coordinator.receive(consume result)
+    _coordinator.request(this)
 
   fun ref yield() =>
     """
@@ -120,15 +169,18 @@ actor Worker[Input: Any #send, Output: Any #send]
     _run_again()
 
 interface WorkerNotify[Input: Any #send, Output: Any #send]
-  // TODO: we don't need `worker` on `init`
-  fun ref init(worker: Worker[Input, Output] ref, work_set: Input)
+
+  // allow accumulator to end work early
+
+  fun ref receive(work_set: Input)
     """
-    Called when a worker first starts working. Followed by a called to `work`.
-    `work_set` contains the initial input set for this worker to use as the
-    basis for processing.
+    Called when new data arrives that will need to be worked on.
     """
 
-  fun ref work(worker: Worker[Input, Output] ref)
+  // when coordinator is told a worker is done
+  // if all are done, then send notice to accumulator that no more work is
+  //   coming
+  fun ref process(worker: Worker[Input, Output] ref)
     """
     Called to get the Worker to do work. Long running workers can give control
     of the CPU back by calling `yield` on `worker`. `work` will then be called
