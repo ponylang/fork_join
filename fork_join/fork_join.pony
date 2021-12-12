@@ -47,12 +47,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
         let batch = _generator()?
         worker._receive(consume batch)
       else
-        // there's no additional work to do
-        _workers.unset(worker)
-        // TODO: maybe this should be somewhere else
-        if _workers.size() == 0 then
-          _collector_runner._finish()
-        end
+        _worker_finished(worker)
       end
     else
       // TODO: this should never happen
@@ -67,10 +62,10 @@ actor Coordinator[Input: Any #send, Output: Any #send]
 
   be _worker_finished(worker: WorkerRunner[Input, Output]) =>
     """
-    A worker ended early as requested by coordinator. Remove it from list.
+    Is done, either because it requested more work and the generator is out or
+    because, it was asked to terminate early and it has complied.
     """
     _workers.unset(worker)
-    // TODO: maybe this should be somewhere else
     if _workers.size() == 0 then
       _collector_runner._finish()
     end
