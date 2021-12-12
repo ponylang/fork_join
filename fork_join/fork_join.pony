@@ -50,8 +50,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
         _worker_finished(worker)
       end
     else
-      // TODO: this should never happen
-      None
+      _Fail()
     end
 
   be _terminate() =>
