@@ -11,7 +11,7 @@ actor Main
       Accumulator(env.out))
 
 class WorkerBuilder is fj.WorkerBuilder[Array[U8] iso, USize]
-  fun ref apply(): fj.WorkerNotify[Array[U8] iso, USize] iso^ =>
+  fun ref apply(): fj.Worker[Array[U8] iso, USize] iso^ =>
     Adder
 
 class Generator is fj.Generator[Array[U8] iso]
@@ -48,7 +48,7 @@ class Accumulator is fj.Accumulator[Array[U8] iso, USize]
   fun ref finished() =>
     _out.print(_total.string())
 
-class Adder is fj.WorkerNotify[Array[U8] iso, USize]
+class Adder is fj.Worker[Array[U8] iso, USize]
   var _working_set: Array[U8] = _working_set.create()
 
   fun ref receive(work_set: Array[U8] iso) =>

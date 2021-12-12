@@ -63,7 +63,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       worker._terminate()
     end
 
-  be _finished(worker: WorkerRunner[Input, Output]) =>
+  be _worker_finished(worker: WorkerRunner[Input, Output]) =>
     """
     A worker ended early as requested by coordinator. Remove it from list.
     """
@@ -93,7 +93,7 @@ actor AccumulatorRunner[Input: Any #send, Output: Any #send]
     _coordinator._terminate()
 
 interface WorkerBuilder[Input: Any #send, Output: Any #send]
-  fun ref apply(): WorkerNotify[Input, Output] iso^
+  fun ref apply(): Worker[Input, Output] iso^
     """
     Creates a new worker
     """
@@ -126,71 +126,6 @@ interface Accumulator[Input: Any #send, Output: Any #send]
   fun ref finished()
     """
     Called when all workers have reported in their results
-    """
-
-actor WorkerRunner[Input: Any #send, Output: Any #send]
-  let _coordinator: Coordinator[Input, Output]
-  let _accumulator: AccumulatorRunner[Input, Output]
-  let _notify: WorkerNotify[Input, Output]
-  var _running: Bool = false
-  var _early_termination_requested: Bool = false
-
-  new create(coordinator: Coordinator[Input, Output],
-    accumulator: AccumulatorRunner[Input, Output],
-    notify: WorkerNotify[Input, Output] iso)
-  =>
-    _coordinator = coordinator
-    _accumulator = accumulator
-    _notify = consume notify
-
-  be _receive(batch: Input) =>
-    if not _early_termination_requested then
-      _notify.receive(consume batch)
-      _notify.process(this)
-    end
-
-  be _run_again() =>
-    if not _early_termination_requested then
-      _notify.process(this)
-    end
-
-  be _terminate() =>
-    _early_termination_requested = true
-    _coordinator._finished(this)
-
-  fun ref deliver(result: Output) =>
-    """
-    Called to stop processing and return a result
-    """
-    _accumulator._receive(consume result)
-    _coordinator._request(this)
-
-  fun ref yield() =>
-    """
-    Called to have the worker yield the CPU and continue later.
-    """
-    _run_again()
-
-interface WorkerNotify[Input: Any #send, Output: Any #send]
-
-  // allow accumulator to end work early
-
-  fun ref receive(work_set: Input)
-    """
-    Called when new data arrives that will need to be worked on.
-    """
-
-  // when coordinator is told a worker is done
-  // if all are done, then send notice to accumulator that no more work is
-  //   coming
-  fun ref process(worker: WorkerRunner[Input, Output] ref)
-    """
-    Called to get the Worker to do work. Long running workers can give control
-    of the CPU back by calling `yield` on `worker`. `work` will then be called
-    again at some point in the future to continue working.
-
-    When the worker has a final value to send back to the coordinator, it should
-    call `done` on the `worker`.
     """
 
 primitive EvenlySplitDataElements

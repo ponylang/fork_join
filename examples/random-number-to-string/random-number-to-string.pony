@@ -11,7 +11,7 @@ actor Main
       Accumulator(env.out))
 
 class WorkerBuilder is fj.WorkerBuilder[USize, String]
-  fun ref apply(): fj.WorkerNotify[USize, String] iso^ =>
+  fun ref apply(): fj.Worker[USize, String] iso^ =>
     USizeToString
 
 class Generator is fj.Generator[USize]
@@ -44,7 +44,7 @@ class Accumulator is fj.Accumulator[USize, String]
       _out.print(s)
     end
 
-class USizeToString is fj.WorkerNotify[USize, String]
+class USizeToString is fj.Worker[USize, String]
   var _usize: USize = 0
 
   fun ref receive(work_set: USize) =>
