@@ -59,7 +59,7 @@ class Adder is fj.WorkerNotify[Array[U8] iso, USize]
   fun ref receive(work_set: Array[U8] iso) =>
     _working_set = consume work_set
 
-  fun ref process(worker: fj.Worker[Array[U8] iso, USize] ref) =>
+  fun ref process(worker: fj.WorkerRunner[Array[U8] iso, USize] ref) =>
     var total: USize = 0
 
     for i in _working_set.values() do

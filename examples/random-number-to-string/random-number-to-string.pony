@@ -46,6 +46,6 @@ class USizeToString is fj.WorkerNotify[USize, String]
   fun ref receive(work_set: USize) =>
     _usize = work_set
 
-  fun ref process(worker: fj.Worker[USize, String] ref) =>
+  fun ref process(worker: fj.WorkerRunner[USize, String] ref) =>
     worker.deliver(_usize.string())
 

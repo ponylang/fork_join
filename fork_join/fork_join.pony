@@ -6,7 +6,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
   let _worker_builder: WorkerBuilder[Input, Output]
   let _generator: Generator[Input]
   let _accumulator: AccumulatorRunner[Input, Output]
-  let _workers: SetIs[Worker[Input, Output]] = _workers.create()
+  let _workers: SetIs[WorkerRunner[Input, Output]] = _workers.create()
   let _max_workers: USize
 
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
@@ -27,7 +27,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     var mw = _max_workers
     while true do
       // create worker
-      let w = Worker[Input, Output](this, _worker_builder())
+      let w = WorkerRunner[Input, Output](this, _worker_builder())
       _workers.set(w)
 
       // request data for the worker
@@ -42,7 +42,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     // TODO: remove this indirection. Let workers know about the accumulator directly
     _accumulator._receive(consume result)
 
-  be _request(worker: Worker[Input, Output]) =>
+  be _request(worker: WorkerRunner[Input, Output]) =>
     if _workers.contains(worker) then
       try
         let batch = _generator(_max_workers)?
@@ -66,7 +66,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       worker._terminate()
     end
 
-  be _finished(worker: Worker[Input, Output]) =>
+  be _finished(worker: WorkerRunner[Input, Output]) =>
     """
     A worker ended early as requested by coordinator. Remove it from list.
     """
@@ -123,7 +123,7 @@ interface Accumulator[A: Any #send]
     Called when all workers have reported in their results
     """
 
-actor Worker[Input: Any #send, Output: Any #send]
+actor WorkerRunner[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
   let _notify: WorkerNotify[Input, Output]
   var _running: Bool = false
@@ -175,7 +175,7 @@ interface WorkerNotify[Input: Any #send, Output: Any #send]
   // when coordinator is told a worker is done
   // if all are done, then send notice to accumulator that no more work is
   //   coming
-  fun ref process(worker: Worker[Input, Output] ref)
+  fun ref process(worker: WorkerRunner[Input, Output] ref)
     """
     Called to get the Worker to do work. Long running workers can give control
     of the CPU back by calling `yield` on `worker`. `work` will then be called
