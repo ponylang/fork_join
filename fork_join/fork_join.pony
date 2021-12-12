@@ -31,24 +31,22 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       _workers.set(w)
 
       // request data for the worker
-      request(w)
+      _request(w)
 
       // Run down max workers
       mw = mw - 1
       if mw == 0 then break end
     end
 
-  // TODO: should be private
-  be receive(result: Output) =>
+  be _receive(result: Output) =>
     // TODO: remove this indirection. Let workers know about the accumulator directly
-    _accumulator.receive(consume result)
+    _accumulator._receive(consume result)
 
-  // TODO: should be private
-  be request(worker: Worker[Input, Output]) =>
+  be _request(worker: Worker[Input, Output]) =>
     if _workers.contains(worker) then
       try
         let batch = _generator(_max_workers)?
-        worker.receive(consume batch)
+        worker._receive(consume batch)
       else
         // there's no additional work to do
         _workers.unset(worker)
@@ -62,14 +60,13 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       None
     end
 
-  // TODO: should be private
-  be finish() =>
+  be _terminate() =>
     // send message to each worker to stop working
     for worker in _workers.values() do
-      worker.terminate()
+      worker._terminate()
     end
 
-  be finished(worker: Worker[Input, Output]) =>
+  be _finished(worker: Worker[Input, Output]) =>
     """
     A worker ended early as requested by coordinator. Remove it from list.
     """
@@ -89,15 +86,14 @@ actor AccumulatorRunner[Input: Any #send, Output: Any #send]
     _accumulator = consume accumulator
     _coordinator = coordinator
 
-  // TODO: should be private
-  be receive(result: Output) =>
+  be _receive(result: Output) =>
     _accumulator.collect(consume result)
 
   be _finish() =>
     _accumulator.finished()
 
   fun ref finish() =>
-    _coordinator.finish()
+    _coordinator._terminate()
 
 interface WorkerBuilder[Input: Any #send, Output: Any #send]
   fun ref apply(): WorkerNotify[Input, Output] iso^
@@ -139,7 +135,7 @@ actor Worker[Input: Any #send, Output: Any #send]
     _coordinator = coordinator
     _notify = consume notify
 
-  be receive(batch: Input) =>
+  be _receive(batch: Input) =>
     if not _early_termination_requested then
       _notify.receive(consume batch)
       _notify.process(this)
@@ -150,17 +146,16 @@ actor Worker[Input: Any #send, Output: Any #send]
       _notify.process(this)
     end
 
-  // TODO: should be private
-  be terminate() =>
+  be _terminate() =>
     _early_termination_requested = true
-    _coordinator.finished(this)
+    _coordinator._finished(this)
 
   fun ref deliver(result: Output) =>
     """
     Called to stop processing and return a result
     """
-    _coordinator.receive(consume result)
-    _coordinator.request(this)
+    _coordinator._receive(consume result)
+    _coordinator._request(this)
 
   fun ref yield() =>
     """
