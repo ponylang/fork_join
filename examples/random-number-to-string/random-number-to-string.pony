@@ -24,15 +24,16 @@ class Generator is fj.Generator[USize]
     end
     x
 
-class Accumulator is fj.Accumulator[String]
+class Accumulator is fj.Accumulator[USize, String]
   let _strings: Array[String] = _strings.create()
   let _out: OutStream
 
   new iso create(out: OutStream) =>
     _out = out
 
-  fun ref collect(result: String) =>
-    _out.print("got... " + result)
+  fun ref collect(accumulator: fj.AccumulatorRunner[USize, String] ref,
+    result: String)
+  =>
     _strings.push(result)
 
   fun ref finished() =>

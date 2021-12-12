@@ -40,14 +40,16 @@ class Generator is fj.Generator[Array[U8] iso]
     end
     consume b
 
-class Accumulator is fj.Accumulator[USize]
+class Accumulator is fj.Accumulator[Array[U8] iso, USize]
   var _total: USize = 0
   let _out: OutStream
 
   new iso create(out: OutStream) =>
     _out = out
 
-  fun ref collect(result: USize) =>
+  fun ref collect(accumulator: fj.AccumulatorRunner[Array[U8] iso, USize] ref,
+    result: USize)
+  =>
     _total = _total + result
 
   fun ref finished() =>

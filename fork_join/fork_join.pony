@@ -1,6 +1,5 @@
 use "collections"
 use @ponyint_sched_cores[I32]()
-use @printf[I32](fmt: Pointer[U8] tag, ...)
 
 actor Coordinator[Input: Any #send, Output: Any #send]
   let _worker_builder: WorkerBuilder[Input, Output]
@@ -11,7 +10,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
 
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
     generator: Generator[Input] iso,
-    accumulator: Accumulator[Output] iso,
+    accumulator: Accumulator[Input, Output] iso,
     max_workers: USize = 0)
   =>
     _worker_builder = consume worker_builder
@@ -74,16 +73,16 @@ actor Coordinator[Input: Any #send, Output: Any #send]
 
 actor AccumulatorRunner[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
-  let _accumulator: Accumulator[Output]
+  let _accumulator: Accumulator[Input, Output]
 
-  new create(accumulator: Accumulator[Output] iso,
+  new create(accumulator: Accumulator[Input, Output] iso,
     coordinator: Coordinator[Input, Output])
   =>
     _accumulator = consume accumulator
     _coordinator = coordinator
 
   be _receive(result: Output) =>
-    _accumulator.collect(consume result)
+    _accumulator.collect(this, consume result)
 
   be _finish() =>
     _accumulator.finished()
@@ -107,11 +106,15 @@ interface Generator[A: Any #send]
     If not additional data is available, `error` should be called.
     """
 
-interface Accumulator[A: Any #send]
-  fun ref collect(result: A)
+interface Accumulator[Input: Any #send, Output: Any #send]
+  fun ref collect(
+    accumulator: AccumulatorRunner[Input, Output] ref,
+    result: Output)
     """
-    Called when a worker has finished working and has a result to be
-    "accumulated"
+    Called when a worker results are received from a worker.
+
+    If you need to end processing early, you can call `finish` on `accumulator`.
+    Otherwise, the job will continue.
     """
 
   fun ref finished()
