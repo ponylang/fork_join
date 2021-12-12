@@ -27,7 +27,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     var mw = _max_workers
     while true do
       // create worker
-      let w = WorkerRunner[Input, Output](this, _worker_builder())
+      let w = WorkerRunner[Input, Output](this, _accumulator, _worker_builder())
       _workers.set(w)
 
       // request data for the worker
@@ -37,10 +37,6 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       mw = mw - 1
       if mw == 0 then break end
     end
-
-  be _receive(result: Output) =>
-    // TODO: remove this indirection. Let workers know about the accumulator directly
-    _accumulator._receive(consume result)
 
   be _request(worker: WorkerRunner[Input, Output]) =>
     if _workers.contains(worker) then
@@ -76,6 +72,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       _accumulator._finish()
     end
 
+// TODO: Doesn't need to be public
 actor AccumulatorRunner[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
   let _accumulator: Accumulator[Output]
@@ -125,14 +122,17 @@ interface Accumulator[A: Any #send]
 
 actor WorkerRunner[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
+  let _accumulator: AccumulatorRunner[Input, Output]
   let _notify: WorkerNotify[Input, Output]
   var _running: Bool = false
   var _early_termination_requested: Bool = false
 
   new create(coordinator: Coordinator[Input, Output],
+    accumulator: AccumulatorRunner[Input, Output],
     notify: WorkerNotify[Input, Output] iso)
   =>
     _coordinator = coordinator
+    _accumulator = accumulator
     _notify = consume notify
 
   be _receive(batch: Input) =>
@@ -154,7 +154,7 @@ actor WorkerRunner[Input: Any #send, Output: Any #send]
     """
     Called to stop processing and return a result
     """
-    _coordinator._receive(consume result)
+    _accumulator._receive(consume result)
     _coordinator._request(this)
 
   fun ref yield() =>
