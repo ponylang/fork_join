@@ -8,7 +8,7 @@ actor Main
     fj.Coordinator[USize, String](
       WorkerBuilder,
       Generator,
-      Accumulator(env.out))
+      StringCollector(env.out))
 
 class WorkerBuilder is fj.WorkerBuilder[USize, String]
   fun ref apply(): fj.Worker[USize, String] iso^ =>
@@ -27,19 +27,19 @@ class Generator is fj.Generator[USize]
     end
     x
 
-class Accumulator is fj.Accumulator[USize, String]
+class StringCollector is fj.Collector[USize, String]
   let _strings: Array[String] = _strings.create()
   let _out: OutStream
 
   new iso create(out: OutStream) =>
     _out = out
 
-  fun ref collect(accumulator: fj.AccumulatorRunner[USize, String] ref,
+  fun ref collect(runner: fj.CollectorRunner[USize, String] ref,
     result: String)
   =>
     _strings.push(result)
 
-  fun ref finished() =>
+  fun ref finish() =>
     for s in _strings.values() do
       _out.print(s)
     end

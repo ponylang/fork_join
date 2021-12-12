@@ -4,18 +4,18 @@ use @ponyint_sched_cores[I32]()
 actor Coordinator[Input: Any #send, Output: Any #send]
   let _worker_builder: WorkerBuilder[Input, Output]
   let _generator: Generator[Input]
-  let _accumulator: AccumulatorRunner[Input, Output]
+  let _collector_runner: CollectorRunner[Input, Output]
   let _workers: SetIs[WorkerRunner[Input, Output]] = _workers.create()
   let _max_workers: USize
 
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
     generator: Generator[Input] iso,
-    accumulator: Accumulator[Input, Output] iso,
+    collector: Collector[Input, Output] iso,
     max_workers: USize = 0)
   =>
     _worker_builder = consume worker_builder
     _generator = consume generator
-    _accumulator = AccumulatorRunner[Input, Output](consume accumulator, this)
+    _collector_runner = CollectorRunner[Input, Output](consume collector, this)
 
     _max_workers = if max_workers > 0 then
       max_workers
@@ -28,7 +28,9 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     var mw = _max_workers
     while true do
       // create worker
-      let w = WorkerRunner[Input, Output](this, _accumulator, _worker_builder())
+      let w = WorkerRunner[Input, Output](this,
+        _collector_runner,
+        _worker_builder())
       _workers.set(w)
 
       // request data for the worker
@@ -49,7 +51,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
         _workers.unset(worker)
         // TODO: maybe this should be somewhere else
         if _workers.size() == 0 then
-          _accumulator._finish()
+          _collector_runner._finish()
         end
       end
     else
@@ -70,27 +72,8 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     _workers.unset(worker)
     // TODO: maybe this should be somewhere else
     if _workers.size() == 0 then
-      _accumulator._finish()
+      _collector_runner._finish()
     end
-
-actor AccumulatorRunner[Input: Any #send, Output: Any #send]
-  let _coordinator: Coordinator[Input, Output]
-  let _accumulator: Accumulator[Input, Output]
-
-  new create(accumulator: Accumulator[Input, Output] iso,
-    coordinator: Coordinator[Input, Output])
-  =>
-    _accumulator = consume accumulator
-    _coordinator = coordinator
-
-  be _receive(result: Output) =>
-    _accumulator.collect(this, consume result)
-
-  be _finish() =>
-    _accumulator.finished()
-
-  fun ref finish() =>
-    _coordinator._terminate()
 
 interface WorkerBuilder[Input: Any #send, Output: Any #send]
   fun ref apply(): Worker[Input, Output] iso^
@@ -110,20 +93,4 @@ interface Generator[A: Any #send]
     Called each time a worker needs data.
 
     If not additional data is available, `error` should be called.
-    """
-
-interface Accumulator[Input: Any #send, Output: Any #send]
-  fun ref collect(
-    accumulator: AccumulatorRunner[Input, Output] ref,
-    result: Output)
-    """
-    Called when a worker results are received from a worker.
-
-    If you need to end processing early, you can call `finish` on `accumulator`.
-    Otherwise, the job will continue.
-    """
-
-  fun ref finished()
-    """
-    Called when all workers have reported in their results
     """

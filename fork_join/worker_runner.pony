@@ -1,25 +1,25 @@
 // TODO: needs class level documentation
 actor WorkerRunner[Input: Any #send, Output: Any #send]
   let _coordinator: Coordinator[Input, Output]
-  let _accumulator: AccumulatorRunner[Input, Output]
+  let _collector: CollectorRunner[Input, Output]
   let _notify: Worker[Input, Output]
   var _running: Bool = false
   var _early_termination_requested: Bool = false
 
   new create(coordinator: Coordinator[Input, Output],
-    accumulator: AccumulatorRunner[Input, Output],
+    collector: CollectorRunner[Input, Output],
     notify: Worker[Input, Output] iso)
   =>
     _coordinator = coordinator
-    _accumulator = accumulator
+    _collector = collector
     _notify = consume notify
 
   fun ref deliver(result: Output) =>
     """
-    Called to send a result to the accumulator and request additional work from
+    Called to send a result to the collector and request additional work from
     the coordinator.
     """
-    _accumulator._receive(consume result)
+    _collector._receive(consume result)
     _coordinator._request(this)
 
   fun ref yield() =>

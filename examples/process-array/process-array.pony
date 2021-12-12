@@ -8,7 +8,7 @@ actor Main
     fj.Coordinator[Array[U8] iso, USize](
       WorkerBuilder,
       Generator(consume array),
-      Accumulator(env.out))
+      AddingCollector(env.out))
 
 class WorkerBuilder is fj.WorkerBuilder[Array[U8] iso, USize]
   fun ref apply(): fj.Worker[Array[U8] iso, USize] iso^ =>
@@ -33,19 +33,19 @@ class Generator is fj.Generator[Array[U8] iso]
     (let batch, _working_set) = (consume _working_set).chop(distribution_amount)
     consume batch
 
-class Accumulator is fj.Accumulator[Array[U8] iso, USize]
+class AddingCollector is fj.Collector[Array[U8] iso, USize]
   var _total: USize = 0
   let _out: OutStream
 
   new iso create(out: OutStream) =>
     _out = out
 
-  fun ref collect(accumulator: fj.AccumulatorRunner[Array[U8] iso, USize] ref,
+  fun ref collect(runner: fj.CollectorRunner[Array[U8] iso, USize] ref,
     result: USize)
   =>
     _total = _total + result
 
-  fun ref finished() =>
+  fun ref finish() =>
     _out.print(_total.string())
 
 class Adder is fj.Worker[Array[U8] iso, USize]
