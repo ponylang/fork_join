@@ -75,12 +75,6 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       _collector_runner._finish()
     end
 
-interface WorkerBuilder[Input: Any #send, Output: Any #send]
-  fun ref apply(): Worker[Input, Output] iso^
-    """
-    Creates a new worker
-    """
-
 interface Generator[A: Any #send]
   fun ref init(workers: USize)
     """
