@@ -54,11 +54,11 @@ class Adder is fj.Worker[Array[U8] iso, USize]
   fun ref receive(work_set: Array[U8] iso) =>
     _working_set = consume work_set
 
-  fun ref process(worker: fj.WorkerRunner[Array[U8] iso, USize] ref) =>
+  fun ref process(runner: fj.WorkerRunner[Array[U8] iso, USize] ref) =>
     var total: USize = 0
 
     for i in _working_set.values() do
       total = total + i.usize()
     end
 
-    worker.deliver(total)
+    runner.deliver(total)

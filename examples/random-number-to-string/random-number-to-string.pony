@@ -50,6 +50,6 @@ class USizeToString is fj.Worker[USize, String]
   fun ref receive(work_set: USize) =>
     _usize = work_set
 
-  fun ref process(worker: fj.WorkerRunner[USize, String] ref) =>
-    worker.deliver(_usize.string())
+  fun ref process(runner: fj.WorkerRunner[USize, String] ref) =>
+    runner.deliver(_usize.string())
 
