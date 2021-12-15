@@ -5,7 +5,7 @@ actor Coordinator[Input: Any #send, Output: Any #send]
   let _worker_builder: WorkerBuilder[Input, Output]
   let _generator: Generator[Input]
   let _collector_runner: CollectorRunner[Input, Output]
-  let _workers: SetIs[WorkerRunner[Input, Output]] = _workers.create()
+  embed _workers: SetIs[WorkerRunner[Input, Output]] = _workers.create()
   let _max_workers: USize
 
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
