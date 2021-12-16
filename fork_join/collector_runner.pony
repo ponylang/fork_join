@@ -14,6 +14,8 @@ actor CollectorRunner[Input: Any #send, Output: Any #send]
     Called from the user supplied collector to terminate processing before the
     generator is out of data.
     """
+    // TODO: this should have some state so if we have already called this, we
+    // don't send extra messages
     _coordinator._terminate()
 
   be _receive(result: Output) =>
