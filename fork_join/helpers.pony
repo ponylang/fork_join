@@ -1,4 +1,15 @@
 primitive EvenlySplitDataElements
+  """
+  Gives a distribution for X `data_elements` across Y `split_across` buckets.
+
+  Useful to taking things like an Array of data and dividing it up "evenly"
+  across a number of workers.
+
+  The return value is an Array of `split_across` length with each bucket being
+  the number of `data_elements` that would fall into that bucket. In our
+  fork/join use case, that means that each Array bucket is the number of
+  data_elements to give to a worker corresponding to the bucket.
+  """
   fun apply(data_elements: USize, split_across: USize): Array[USize] iso^ =>
     // If the number data elements were equal to number of workers to split
     // across then each worker would get 1 element.
