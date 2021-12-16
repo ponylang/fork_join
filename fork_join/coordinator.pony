@@ -23,6 +23,24 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       @ponyint_sched_cores().usize()
     end
 
+    _start()
+
+  be _request(worker: WorkerRunner[Input, Output]) =>
+    """
+    Request additional work be generated and delivered to `worker`.
+    """
+    if _workers.contains(worker) then
+      try
+        let batch = _generator()?
+        worker._receive(consume batch)
+      else
+        _worker_finished(worker)
+      end
+    else
+      _Fail()
+    end
+
+  be _start() =>
     _generator.init(_max_workers)
 
     var mw = _max_workers
@@ -39,21 +57,6 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       // Run down max workers
       mw = mw - 1
       if mw == 0 then break end
-    end
-
-  be _request(worker: WorkerRunner[Input, Output]) =>
-    """
-    Request additional work be generated and delivered to `worker`.
-    """
-    if _workers.contains(worker) then
-      try
-        let batch = _generator()?
-        worker._receive(consume batch)
-      else
-        _worker_finished(worker)
-      end
-    else
-      _Fail()
     end
 
   be _terminate() =>
