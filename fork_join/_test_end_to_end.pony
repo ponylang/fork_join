@@ -28,7 +28,6 @@ class _EndToEndBuilder is WorkerBuilder[Array[U8] iso, Array[U8] val]
 
 class _EndToEndGenerator is Generator[Array[U8] iso]
   var _working_set: Array[U8] iso
-  var _distribution_set: Array[USize] = _distribution_set.create()
 
   new iso create(working_set: Array[U8] iso) =>
     _working_set = consume working_set
