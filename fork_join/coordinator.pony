@@ -23,6 +23,8 @@ actor Coordinator[Input: Any #send, Output: Any #send]
       @ponyint_sched_cores().usize()
     end
 
+    _generator.init(_max_workers)
+
     _start()
 
   be _request(worker: WorkerRunner[Input, Output]) =>
@@ -41,8 +43,6 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     end
 
   be _start() =>
-    _generator.init(_max_workers)
-
     var mw = _max_workers
     while true do
       // create worker
