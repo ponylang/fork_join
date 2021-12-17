@@ -1,12 +1,12 @@
 // TODO: needs class level documentation
 actor WorkerRunner[Input: Any #send, Output: Any #send]
-  let _coordinator: Coordinator[Input, Output]
+  let _coordinator: _Coordinator[Input, Output]
   let _collector: CollectorRunner[Input, Output]
   let _notify: Worker[Input, Output]
   var _running: Bool = false
   var _early_termination_requested: Bool = false
 
-  new create(coordinator: Coordinator[Input, Output],
+  new create(coordinator: _Coordinator[Input, Output],
     collector: CollectorRunner[Input, Output],
     notify: Worker[Input, Output] iso)
   =>

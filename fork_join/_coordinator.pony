@@ -1,7 +1,8 @@
 use "collections"
 use @ponyint_sched_cores[I32]()
 
-actor Coordinator[Input: Any #send, Output: Any #send]
+actor _Coordinator[Input: Any #send, Output: Any #send]
+  var _status: _CoordinatorStatus = _NotYetStarted
   let _worker_builder: WorkerBuilder[Input, Output]
   let _generator: Generator[Input]
   let _collector_runner: CollectorRunner[Input, Output]
@@ -25,8 +26,6 @@ actor Coordinator[Input: Any #send, Output: Any #send]
 
     _generator.init(_max_workers)
 
-    _start()
-
   be _request(worker: WorkerRunner[Input, Output]) =>
     """
     Request additional work be generated and delivered to `worker`.
@@ -43,20 +42,24 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     end
 
   be _start() =>
-    var mw = _max_workers
-    while true do
-      // create worker
-      let w = WorkerRunner[Input, Output](this,
-        _collector_runner,
-        _worker_builder())
-      _workers.set(w)
+    if _status is _NotYetStarted then
+      _status = _Started
 
-      // request data for the worker
-      _request(w)
+      var mw = _max_workers
+      while true do
+        // create worker
+        let w = WorkerRunner[Input, Output](this,
+          _collector_runner,
+          _worker_builder())
+        _workers.set(w)
 
-      // Run down max workers
-      mw = mw - 1
-      if mw == 0 then break end
+        // request data for the worker
+        _request(w)
+
+        // Run down max workers
+        mw = mw - 1
+        if mw == 0 then break end
+      end
     end
 
   be _terminate() =>
@@ -68,8 +71,12 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     Long-running workers that don't periodically yield could run for a very long
     time making termination an extended proposition.
     """
-    for worker in _workers.values() do
-      worker._terminate()
+    if _status is _Started then
+      _status = _Terminating
+
+      for worker in _workers.values() do
+        worker._terminate()
+      end
     end
 
   be _worker_finished(worker: WorkerRunner[Input, Output]) =>
@@ -81,3 +88,5 @@ actor Coordinator[Input: Any #send, Output: Any #send]
     if _workers.size() == 0 then
       _collector_runner._finish()
     end
+
+type _CoordinatorStatus is (_NotYetStarted | _Started | _Terminating)

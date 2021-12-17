@@ -5,10 +5,11 @@ use "random"
 
 actor Main
   new create(env: Env) =>
-    fj.Coordinator[USize, String](
+    let job = fj.Job[USize, String](
       WorkerBuilder,
       Generator,
       StringCollector(env.out))
+    job.start()
 
 class WorkerBuilder is fj.WorkerBuilder[USize, String]
   fun ref apply(): fj.Worker[USize, String] iso^ =>

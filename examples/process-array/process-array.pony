@@ -5,10 +5,11 @@ use fj = "../../fork_join"
 actor Main
   new create(env: Env) =>
     let array: Array[U8] iso = recover iso [ 201;202;3;4;5;6;7;8;9;10 ] end
-    fj.Coordinator[Array[U8] iso, USize](
+    let job = fj.Job[Array[U8] iso, USize](
       WorkerBuilder,
       Generator(consume array),
       AddingCollector(env.out))
+    job.start()
 
 class WorkerBuilder is fj.WorkerBuilder[Array[U8] iso, USize]
   fun ref apply(): fj.Worker[Array[U8] iso, USize] iso^ =>

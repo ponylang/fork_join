@@ -1,11 +1,11 @@
 // TODO: top level documentation
 actor CollectorRunner[Input: Any #send, Output: Any #send]
   var _terminating: Bool = false
-  let _coordinator: Coordinator[Input, Output]
+  let _coordinator: _Coordinator[Input, Output]
   let _collector: Collector[Input, Output]
 
   new create(collector: Collector[Input, Output] iso,
-    coordinator: Coordinator[Input, Output])
+    coordinator: _Coordinator[Input, Output])
   =>
     _collector = consume collector
     _coordinator = coordinator

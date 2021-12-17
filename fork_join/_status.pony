@@ -1,0 +1,3 @@
+primitive _Started
+primitive _Terminating
+primitive _NotYetStarted
