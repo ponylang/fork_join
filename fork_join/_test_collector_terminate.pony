@@ -22,10 +22,12 @@ class iso _TestCollectorTerminate is UnitTest
     h.long_test(1_000_000_000)
     h.expect_action("collector.finish()")
 
-    Coordinator[U8, U8](
+    let job = Job[U8, U8](
       _CollectorTerminateBuilder,
       _CollectorTerminateGenerator,
       _CollectorTerminateCollector(h))
+
+    job.start()
 
 class _CollectorTerminateBuilder is WorkerBuilder[U8, U8]
   fun ref apply(): Worker[U8, U8] iso^ =>

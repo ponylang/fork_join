@@ -13,10 +13,11 @@ actor Main
       let fp = FilePath(env.root as AmbientAuth, env.args(1)?, caps)
       let file = recover iso OpenFile(fp) as File end
 
-      fj.Coordinator[String, WordCounts iso](
+      let job = fj.Job[String, WordCounts iso](
         WorkerBuilder,
         FileReader(consume file),
         WordCountTotaler(env.out))
+      job.start()
     else
       env.exitcode(-1)
       env.err.print("Error during setup.")
