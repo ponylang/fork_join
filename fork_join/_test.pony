@@ -10,3 +10,4 @@ actor Main is TestList
     test(_TestEvenlySplitDataElementsWithMoreDataElements)
     test(_TestEvenlySplitDataElementsWithLessDataElements)
     test(_TestEvenlySplitDataElementsWithEvenDataElements)
+    test(_TestJobTerminate)

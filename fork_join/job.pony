@@ -26,7 +26,7 @@ actor Job[Input: Any #send, Output: Any #send]
     """
     End the job before the generator has run out of data.
     """
-    if _status is _Terminating then
+    if _status is _Started then
       _status = _Terminating
       _coordinator._terminate()
     end
