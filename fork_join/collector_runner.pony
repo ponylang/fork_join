@@ -1,5 +1,6 @@
 // TODO: top level documentation
 actor CollectorRunner[Input: Any #send, Output: Any #send]
+  var _terminating: Bool = false
   let _coordinator: Coordinator[Input, Output]
   let _collector: Collector[Input, Output]
 
@@ -14,9 +15,10 @@ actor CollectorRunner[Input: Any #send, Output: Any #send]
     Called from the user supplied collector to terminate processing before the
     generator is out of data.
     """
-    // TODO: this should have some state so if we have already called this, we
-    // don't send extra messages
-    _coordinator._terminate()
+    if not _terminating then
+      _terminating = true
+      _coordinator._terminate()
+    end
 
   be _receive(result: Output) =>
     """
