@@ -340,6 +340,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../fork_join-Job/" title="actor Job" class="md-nav__link">
+      actor Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../fork_join-EvenlySplitDataElements/" title="primitive EvenlySplitDataElements" class="md-nav__link">
       primitive EvenlySplitDataElements
     </a>
@@ -354,18 +366,6 @@
   <li class="md-nav__item">
     <a href="../fork_join-Generator/" title="interface Generator" class="md-nav__link">
       interface Generator
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../fork_join-Coordinator/" title="actor Coordinator" class="md-nav__link">
-      actor Coordinator
     </a>
   </li>
 
@@ -503,14 +503,14 @@
 <h3 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h3>
 <p><span class="source-link"><a href="../src/fork_join/worker_runner/#L9">[Source]</a></span></p>
 <pre><code class="language-pony">new tag create(
-  coordinator: Coordinator[Input, Output] tag,
+  coordinator: _Coordinator[Input, Output] tag,
   collector: CollectorRunner[Input, Output] tag,
   notify: Worker[Input, Output] iso)
 : WorkerRunner[Input, Output] tag^
 </code></pre>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <ul>
-<li>coordinator: <a href="../fork_join-Coordinator/">Coordinator</a>[Input, Output] tag</li>
+<li>coordinator: _Coordinator[Input, Output] tag</li>
 <li>collector: <a href="../fork_join-CollectorRunner/">CollectorRunner</a>[Input, Output] tag</li>
 <li>notify: <a href="../fork_join-Worker/">Worker</a>[Input, Output] iso</li>
 </ul>

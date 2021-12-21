@@ -250,6 +250,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../fork_join-Job/" title="actor Job" class="md-nav__link">
+      actor Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../fork_join-EvenlySplitDataElements/" title="primitive EvenlySplitDataElements" class="md-nav__link">
       primitive EvenlySplitDataElements
     </a>
@@ -264,18 +276,6 @@
   <li class="md-nav__item">
     <a href="../fork_join-Generator/" title="interface Generator" class="md-nav__link">
       interface Generator
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../fork_join-Coordinator/" title="actor Coordinator" class="md-nav__link">
-      actor Coordinator
     </a>
   </li>
 
@@ -483,16 +483,16 @@
 </code></pre>
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <h3 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/collector_runner/#L6">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/collector_runner/#L7">[Source]</a></span></p>
 <pre><code class="language-pony">new tag create(
   collector: Collector[Input, Output] iso,
-  coordinator: Coordinator[Input, Output] tag)
+  coordinator: _Coordinator[Input, Output] tag)
 : CollectorRunner[Input, Output] tag^
 </code></pre>
 <h4 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h4>
 <ul>
 <li>collector: <a href="../fork_join-Collector/">Collector</a>[Input, Output] iso</li>
-<li>coordinator: <a href="../fork_join-Coordinator/">Coordinator</a>[Input, Output] tag</li>
+<li>coordinator: _Coordinator[Input, Output] tag</li>
 </ul>
 <h4 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
 <ul>
@@ -501,7 +501,7 @@
 <hr />
 <h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
 <h3 id="terminate">terminate<a class="headerlink" href="#terminate" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/collector_runner/#L12">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/collector_runner/#L13">[Source]</a></span></p>
 <p>Called from the user supplied collector to terminate processing before the
 generator is out of data.</p>
 <pre><code class="language-pony">fun ref terminate()
@@ -532,7 +532,7 @@ generator is out of data.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../fork_join-Coordinator/" title="actor Coordinator" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../fork_join-Generator/" title="interface Generator" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -541,7 +541,7 @@ generator is out of data.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                actor Coordinator
+                interface Generator
               </span>
             </div>
           </a>

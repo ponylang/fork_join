@@ -244,6 +244,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../fork_join-Job/" title="actor Job" class="md-nav__link">
+      actor Job
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../fork_join-EvenlySplitDataElements/" title="primitive EvenlySplitDataElements" class="md-nav__link">
       primitive EvenlySplitDataElements
     </a>
@@ -258,18 +270,6 @@
   <li class="md-nav__item">
     <a href="../../../fork_join-Generator/" title="interface Generator" class="md-nav__link">
       interface Generator
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../fork_join-Coordinator/" title="actor Coordinator" class="md-nav__link">
-      actor Coordinator
     </a>
   </li>
 
@@ -320,11 +320,12 @@
                 
                 <pre><code class="language-pony-full-source">// TODO: top level documentation
 actor CollectorRunner[Input: Any #send, Output: Any #send]
-  let _coordinator: Coordinator[Input, Output]
+  var _terminating: Bool = false
+  let _coordinator: _Coordinator[Input, Output]
   let _collector: Collector[Input, Output]
 
   new create(collector: Collector[Input, Output] iso,
-    coordinator: Coordinator[Input, Output])
+    coordinator: _Coordinator[Input, Output])
   =&gt;
     _collector = consume collector
     _coordinator = coordinator
@@ -334,9 +335,10 @@ actor CollectorRunner[Input: Any #send, Output: Any #send]
     Called from the user supplied collector to terminate processing before the
     generator is out of data.
     &quot;&quot;&quot;
-    // TODO: this should have some state so if we have already called this, we
-    // don't send extra messages
-    _coordinator._terminate()
+    if not _terminating then
+      _terminating = true
+      _coordinator._terminate()
+    end
 
   be _receive(result: Output) =&gt;
     &quot;&quot;&quot;
