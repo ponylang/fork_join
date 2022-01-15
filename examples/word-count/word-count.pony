@@ -10,7 +10,7 @@ actor Main
   new create(env: Env) =>
     try
       let caps = recover val FileCaps.>set(FileRead).>set(FileStat) end
-      let fp = FilePath(env.root as AmbientAuth, env.args(1)?, caps)
+      let fp = FilePath(env.root, env.args(1)?, caps)
       let file = recover iso OpenFile(fp) as File end
 
       let job = fj.Job[String, WordCounts iso](
