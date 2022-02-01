@@ -1,6 +1,6 @@
 use "ponytest"
 
-class iso _TestEndToEnd is UnitTest
+class \nodoc\ iso _TestEndToEnd is UnitTest
   """
   End-to-end test of simple identity application.
 
@@ -24,11 +24,11 @@ class iso _TestEndToEnd is UnitTest
 
     job.start()
 
-class _EndToEndBuilder is WorkerBuilder[Array[U8] iso, Array[U8] val]
+class \nodoc\ _EndToEndBuilder is WorkerBuilder[Array[U8] iso, Array[U8] val]
   fun ref apply(): Worker[Array[U8] iso, Array[U8] val] iso^ =>
     _EndToEndWorker
 
-class _EndToEndGenerator is Generator[Array[U8] iso]
+class \nodoc\ _EndToEndGenerator is Generator[Array[U8] iso]
   var _working_set: Array[U8] iso
 
   new iso create(working_set: Array[U8] iso) =>
@@ -45,7 +45,7 @@ class _EndToEndGenerator is Generator[Array[U8] iso]
     (let batch, _working_set) = (consume _working_set).chop(1)
     consume batch
 
-class _EndToEndCollector is Collector[Array[U8] iso, Array[U8] val]
+class \nodoc\ _EndToEndCollector is Collector[Array[U8] iso, Array[U8] val]
   let _collected: Array[U8] = _collected.create()
   let _helper: TestHelper
   let _expected: Array[U8] val
@@ -65,7 +65,7 @@ class _EndToEndCollector is Collector[Array[U8] iso, Array[U8] val]
     _helper.assert_array_eq_unordered[U8](_expected, _collected)
     _helper.complete_action("collector.finish()")
 
-class _EndToEndWorker is Worker[Array[U8] iso, Array[U8] val]
+class \nodoc\ _EndToEndWorker is Worker[Array[U8] iso, Array[U8] val]
   var _working_set: Array[U8] val = recover val _working_set.create() end
 
   fun ref receive(work_set: Array[U8] iso) =>

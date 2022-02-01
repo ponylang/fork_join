@@ -1,6 +1,6 @@
 use "ponytest"
 
-class iso _TestCollectorTerminate is UnitTest
+class \nodoc\ iso _TestCollectorTerminate is UnitTest
   """
   Tests that when `terminate` is called by a collector that the job will
   eventually shutdown. We test this by waiting on the collector to receive a
@@ -29,11 +29,11 @@ class iso _TestCollectorTerminate is UnitTest
 
     job.start()
 
-class _CollectorTerminateBuilder is WorkerBuilder[U8, U8]
+class \nodoc\ _CollectorTerminateBuilder is WorkerBuilder[U8, U8]
   fun ref apply(): Worker[U8, U8] iso^ =>
     _CollectorTerminateWorker
 
-class _CollectorTerminateGenerator is Generator[U8]
+class \nodoc\ _CollectorTerminateGenerator is Generator[U8]
   """
   Generator never runs out, this allows us to test that termination triggered
   via a Collector works.
@@ -46,7 +46,7 @@ class _CollectorTerminateGenerator is Generator[U8]
   fun ref apply(): U8 =>
     _value_to_send = _value_to_send + 1
 
-class _CollectorTerminateCollector is Collector[U8, U8]
+class \nodoc\ _CollectorTerminateCollector is Collector[U8, U8]
   """
   Collector that will ask for termination of the job after it has received
   10 results. If termination doesn't work, then `finish` should never be called
@@ -70,7 +70,7 @@ class _CollectorTerminateCollector is Collector[U8, U8]
   fun ref finish() =>
     _helper.complete_action("collector.finish()")
 
-class _CollectorTerminateWorker is Worker[U8, U8]
+class \nodoc\ _CollectorTerminateWorker is Worker[U8, U8]
   var _working_set: U8 = 0
 
   fun ref receive(work_set: U8) =>
