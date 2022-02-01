@@ -1,6 +1,6 @@
 use "ponytest"
 
-class iso _TestEvenlySplitDataElementsWithMoreDataElements is UnitTest
+class \nodoc\ iso _TestEvenlySplitDataElementsWithMoreDataElements is UnitTest
   """
   Test splitting data elements across x workers where there's more data elements
   than workers and the work isn't evenly splittable.
@@ -25,7 +25,7 @@ class iso _TestEvenlySplitDataElementsWithMoreDataElements is UnitTest
     actual = EvenlySplitDataElements(21, 5)
     h.assert_array_eq[USize](expected, actual)
 
-class iso _TestEvenlySplitDataElementsWithLessDataElements is UnitTest
+class \nodoc\ iso _TestEvenlySplitDataElementsWithLessDataElements is UnitTest
   """
   Test splitting elements across x workers where there are fewer data elements
   than workers and the work isn't evenly splittable.
@@ -51,7 +51,7 @@ class iso _TestEvenlySplitDataElementsWithLessDataElements is UnitTest
     actual = EvenlySplitDataElements(3, 5)
     h.assert_array_eq[USize](expected, actual)
 
-class iso _TestEvenlySplitDataElementsWithEvenDataElements is UnitTest
+class \nodoc\ iso _TestEvenlySplitDataElementsWithEvenDataElements is UnitTest
   """
   Test splitting elements across x workers where the work can be evenly
   distributed.
