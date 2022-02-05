@@ -1,6 +1,7 @@
 // in your code this `use` statement would be:
 // use "fork_join"
 use fj = "../../fork_join"
+use "runtime_info"
 
 actor Main
   new create(env: Env) =>
@@ -8,7 +9,8 @@ actor Main
     let job = fj.Job[Array[U8] iso, USize](
       WorkerBuilder,
       Generator(consume array),
-      AddingCollector(env.out))
+      AddingCollector(env.out),
+      SchedulerInfoAuth(env.root))
     job.start()
 
 class WorkerBuilder is fj.WorkerBuilder[Array[U8] iso, USize]

@@ -2,13 +2,15 @@
 // use "fork_join"
 use fj = "../../fork_join"
 use "random"
+use "runtime_info"
 
 actor Main
   new create(env: Env) =>
     let job = fj.Job[USize, String](
       WorkerBuilder,
       Generator,
-      StringCollector(env.out))
+      StringCollector(env.out),
+      SchedulerInfoAuth(env.root))
     job.start()
 
 class WorkerBuilder is fj.WorkerBuilder[USize, String]

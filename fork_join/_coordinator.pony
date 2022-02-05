@@ -1,5 +1,5 @@
 use "collections"
-use @ponyint_sched_cores[I32]()
+use "runtime_info"
 
 actor _Coordinator[Input: Any #send, Output: Any #send]
   var _status: _CoordinatorStatus = _NotYetStarted
@@ -12,6 +12,7 @@ actor _Coordinator[Input: Any #send, Output: Any #send]
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
     generator: Generator[Input] iso,
     collector: Collector[Input, Output] iso,
+    auth: SchedulerInfoAuth,
     max_workers: USize = 0)
   =>
     _worker_builder = consume worker_builder
@@ -21,7 +22,7 @@ actor _Coordinator[Input: Any #send, Output: Any #send]
     _max_workers = if max_workers > 0 then
       max_workers
     else
-      @ponyint_sched_cores().usize()
+      Scheduler.schedulers(auth).usize()
     end
 
     _generator.init(_max_workers)

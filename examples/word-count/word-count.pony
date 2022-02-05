@@ -3,6 +3,7 @@
 use fj = "../../fork_join"
 use "collections"
 use "files"
+use "runtime_info"
 
 type WordCounts is Map[String, USize]
 
@@ -16,7 +17,9 @@ actor Main
       let job = fj.Job[String, WordCounts iso](
         WorkerBuilder,
         FileReader(consume file),
-        WordCountTotaler(env.out))
+        WordCountTotaler(env.out),
+        SchedulerInfoAuth(env.root))
+
       job.start()
     else
       env.exitcode(-1)

@@ -1,4 +1,5 @@
 use "ponytest"
+use "runtime_info"
 
 class \nodoc\ iso _TestCollectorTerminate is UnitTest
   """
@@ -25,7 +26,8 @@ class \nodoc\ iso _TestCollectorTerminate is UnitTest
     let job = Job[U8, U8](
       _CollectorTerminateBuilder,
       _CollectorTerminateGenerator,
-      _CollectorTerminateCollector(h))
+      _CollectorTerminateCollector(h),
+      SchedulerInfoAuth(h.env.root))
 
     job.start()
 
