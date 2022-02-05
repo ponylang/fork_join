@@ -1,4 +1,5 @@
 use "ponytest"
+use "runtime_info"
 
 class \nodoc\ iso _TestEndToEnd is UnitTest
   """
@@ -20,7 +21,8 @@ class \nodoc\ iso _TestEndToEnd is UnitTest
     let job = Job[Array[U8] iso, Array[U8] val](
       _EndToEndBuilder,
       _EndToEndGenerator(consume input),
-      _EndToEndCollector(h, expected))
+      _EndToEndCollector(h, expected),
+      SchedulerInfoAuth(h.env.root))
 
     job.start()
 

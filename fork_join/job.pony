@@ -1,3 +1,5 @@
+use "runtime_info"
+
 // TODO: top-level documentation
 actor Job[Input: Any #send, Output: Any #send]
   var _status: _JobStatus = _NotYetStarted
@@ -6,11 +8,13 @@ actor Job[Input: Any #send, Output: Any #send]
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
     generator: Generator[Input] iso,
     collector: Collector[Input, Output] iso,
+    auth: SchedulerInfoAuth,
     max_workers: USize = 0)
   =>
     _coordinator = _Coordinator[Input, Output](consume worker_builder,
       consume generator,
       consume collector,
+      auth,
       max_workers)
 
   be start() =>
