@@ -1,5 +1,13 @@
-// TODO: top-level documentation
 interface Collector[Input: Any #send, Output: Any #send]
+  """
+  A `Collector` is the final step in the processing pipeline. The `Collector`
+  instance receives incremental results from [`Worker`](./fork_join-Worker/)
+  instances and creates a running tabulation.
+
+  When a `fork_join` job is finished, a `finish` message will be sent to the
+  collector so it can take whatever is required to communicate the final
+  collected results.
+  """
   fun ref collect(
     runner: CollectorRunner[Input, Output] ref,
     result: Output)
