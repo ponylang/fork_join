@@ -1,12 +1,14 @@
 {
-  "packages": [],
+  "packages": [
+    "fork_join"
+  ],
   "deps": [],
   "info": {
-    "description": "",
-    "homepage": "",
-    "license": "",
-    "documentation_url": "",
-    "version": "",
-    "name": ""
+    "description": "Pony parallel processing library",
+    "homepage": "https://github.com/ponylang/fork_joiin",
+    "license": "BSD-2-Clause",
+    "documentation_url": "https://ponylang.github.io/fork_join/",
+    "version": "0.0.0",
+    "name": "fork_join"
   }
 }
