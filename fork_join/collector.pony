@@ -5,7 +5,7 @@ interface Collector[Input: Any #send, Output: Any #send]
   instances and creates a running tabulation.
 
   When a `fork_join` job is finished, a `finish` message will be sent to the
-  collector so it can take whatever is required to communicate the final
+  collector so it can take whatever steps are required to communicate the final
   collected results.
   """
   fun ref collect(
