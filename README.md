@@ -4,7 +4,7 @@ The fork/join package is a parallel processing library for Pony. Fork/join handl
 
 ## Status
 
-Is an alpha-level project that isn't yet ready for public consumption
+fork_join is a beta-level project. The API might change going forward based on feedback from real-world usage.
 
 ## Installation
 
