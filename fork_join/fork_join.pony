@@ -42,7 +42,7 @@ To create a `fork_join` job, users must provide an implementation for 4 differen
 ### [Worker](./fork_join-Worker/)
 
 `Worker` instances are responsible for taking input data and an output that
-will be send to a `Collector` instance for final tabulation.
+will be sent to a `Collector` instance for final tabulation.
 
 ### [WorkerBuilder](./fork_join-WorkerBuilder/)
 
