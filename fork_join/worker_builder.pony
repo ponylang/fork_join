@@ -1,6 +1,6 @@
 interface WorkerBuilder[Input: Any #send, Output: Any #send]
   """
-  A `WorkerBuilder` is factory for creating instances of `Worker`.
+  A `WorkerBuilder` is a factory for creating instances of `Worker`.
   """
   fun ref apply(): Worker[Input, Output] iso^
     """
