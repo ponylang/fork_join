@@ -4,8 +4,8 @@
 fork/join package is a parallel processing framework. It handles much of the
 plumbing required to distribute a data processing tasks across multiple actors.
 
-`fork_join` is used by creating a [`Job`](./fork_join-Job/) and then send a
-`start` message to being processing.
+`fork_join` is used by creating a [`Job`](./fork_join-Job/) and then sending a
+`start` message to begin processing.
 
 ```pony
 actor Main
