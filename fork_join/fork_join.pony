@@ -46,8 +46,8 @@ will be sent to a `Collector` instance for final tabulation.
 
 ### [WorkerBuilder](./fork_join-WorkerBuilder/)
 
-A `WorkerBuilder` is factory for creating instances of `Worker`. The
-`WorkerBuilder` is used when setting up a job and then only the other 3 classes
+A `WorkerBuilder` is a factory for creating instances of `Worker`. This
+component is used when setting up a job. After that, only the other 3 classes
 are used during processing runtime.
 
 ### [Generator](./fork_join-Generator/)
