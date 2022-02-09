@@ -1,7 +1,11 @@
 use "runtime_info"
 
-// TODO: top-level documentation
 actor Job[Input: Any #send, Output: Any #send]
+  """
+  `Job` sets up a new `fork_join` processing task and provides the user with a
+  means to start the job and terminate it before the
+  [`Generator`](./fork_join-Generator/) runs out of data.
+  """
   var _status: _JobStatus = _NotYetStarted
   let _coordinator: _Coordinator[Input, Output]
 

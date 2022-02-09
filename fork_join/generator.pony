@@ -1,4 +1,8 @@
 interface Generator[A: Any #send]
+  """
+  A `Generator` creates data on demand which will be sent to various
+  [`Worker`](./fork_join-Worker/) instances where the data will be processed.
+  """
   fun ref init(workers: USize)
     """
     Called before the first time the generator is called. Allows the generator
@@ -9,5 +13,5 @@ interface Generator[A: Any #send]
     """
     Called each time a worker needs data.
 
-    If not additional data is available, `error` should be called.
+    If no additional data is available, `error` should be returned.
     """
