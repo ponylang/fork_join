@@ -71,7 +71,7 @@ A variety of example application are available in the
 [examples folder](https://github.com/ponylang/fork_join/tree/main/examples) in
 the fork_join repository on GitHub.
 
-Below is an simple example program with a generator that creates random numbers,
+Below is a simple example program with a generator that creates random numbers,
 workers that pass the numbers through without any procesing, and a collector
 that stores the numbers in an array until the job is finished at which point,
 the collector will print the collected numbers to standard output.
