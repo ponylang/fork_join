@@ -149,6 +149,6 @@ out of data (or never if the generator can create an infinite supply of data).
 
 A job can be ended early by:
 
-- Sending a `terminate` message to the `Job`
+- Sending a [`terminate`](./fork_join-Job/#terminate) message to the `Job` instance
 - Calling `terminate` from the [`collect`](./fork_join-Collector/#collect) method of the `Collector`
 """
