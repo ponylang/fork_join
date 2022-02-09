@@ -8,6 +8,9 @@ plumbing required to distribute a data processing tasks across multiple actors.
 `start` message to begin processing.
 
 ```pony
+use fj = "fork_join"
+use "runtime_info"
+
 actor Main
   new create(env: Env) =>
     let job = fj.Job[USize, String](
