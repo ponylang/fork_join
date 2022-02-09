@@ -2,7 +2,7 @@ use "runtime_info"
 
 actor Job[Input: Any #send, Output: Any #send]
   """
-  `Job` sets up a new `fork_join` processing tasks and provides the user with a
+  `Job` sets up a new `fork_join` processing task and provides the user with a
   means to start the job and terminate it before the
   [`Generator`](./fork_join-Generator/) runs out of data.
   """
