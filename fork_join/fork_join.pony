@@ -77,7 +77,7 @@ that stores the numbers in an array until the job is finished. At this point
 the collector will print the collected numbers to standard output.
 
 The job finishes when the generator indicates that it is out of data by
-triggering `error` if the random number it generates is evenly divisible by
+triggering an `error` if the random number it generates is evenly divisible by
 1000.
 
 ```pony
