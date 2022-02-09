@@ -1,7 +1,7 @@
 interface Worker[Input: Any #send, Output: Any #send]
   """
   `Worker` instances are responsible for taking input data and an output that
-  will be send to a `Collector` instance for final tabulation.
+  will be sent to a `Collector` instance for final tabulation.
   """
   fun ref receive(work_set: Input)
     """
