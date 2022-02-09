@@ -143,7 +143,7 @@ class USizeToString is fj.Worker[USize, String]
 
 ## `Job` lifecycle
 
-Once a `Job` is created, nothing will happens until it is sent a `start`
+Once a `Job` is created, nothing will happen until it is sent a `start`
 message. Once the job has started, it will run until the data generator runs
 out of data (or never if the generator can create an infinite supply of data).
 
