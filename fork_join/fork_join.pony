@@ -73,7 +73,7 @@ the fork_join repository on GitHub.
 
 Below is a simple example program with a generator that creates random numbers,
 workers that pass the numbers through without any procesing, and a collector
-that stores the numbers in an array until the job is finished at which point,
+that stores the numbers in an array until the job is finished. At this point
 the collector will print the collected numbers to standard output.
 
 The job finishes when the generator indicates that it is out of data by
