@@ -1,7 +1,7 @@
 actor WorkerRunner[Input: Any #send, Output: Any #send]
   """
   `WorkerRunner` is responsible for delivering data to
-  [Worker](./fork_join-Worker/) instances for processing and for coordinating
+  [Worker](/fork_join/fork_join-Worker/) instances for processing and for coordinating
   the job lifecycle with other `fork_join` library actors.
   """
   let _coordinator: _Coordinator[Input, Output]

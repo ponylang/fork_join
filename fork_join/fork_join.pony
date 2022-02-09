@@ -4,7 +4,7 @@
 fork/join package is a parallel processing framework. It handles much of the
 plumbing required to distribute a data processing tasks across multiple actors.
 
-`fork_join` is used by creating a [`Job`](./fork_join-Job/) and then sending a
+`fork_join` is used by creating a [`Job`](/fork_join/fork_join-Job/) and then sending a
 `start` message to begin processing.
 
 ```pony
@@ -42,23 +42,23 @@ scheduler threads available.
 
 To create a `fork_join` job, users must provide an implementation for 4 different interfaces supplied by the `fork_join` library.
 
-### [Worker](./fork_join-Worker/)
+### [Worker](/fork_join/fork_join-Worker/)
 
 `Worker` instances are responsible for taking input data and an output that
 will be sent to a `Collector` instance for final tabulation.
 
-### [WorkerBuilder](./fork_join-WorkerBuilder/)
+### [WorkerBuilder](/fork_join/fork_join-WorkerBuilder/)
 
 A `WorkerBuilder` is a factory for creating instances of `Worker`. This
 component is used when setting up a job. After that, only the other 3 classes
 are used during processing runtime.
 
-### [Generator](./fork_join-Generator/)
+### [Generator](/fork_join/fork_join-Generator/)
 
 A `Generator` creates data on demand which will be sent to various `Worker`
 instances where the data will be processed.
 
-### [Collector](./fork_join-Collector/)
+### [Collector](/fork_join/fork_join-Collector/)
 
 A `Collector` is the final step in the processing pipeline. The `Collector`
 instance receives incremental results from `Worker` instances and creates a
@@ -149,6 +149,6 @@ out of data (or never if the generator can create an infinite supply of data).
 
 A job can be ended early by:
 
-- Sending a [`terminate`](./fork_join-Job/#terminate) message to the `Job` instance
-- Calling `terminate` from the [`collect`](./fork_join-Collector/#collect) method of the `Collector`
+- Sending a [`terminate`](/fork_join/fork_join-Job/#terminate) message to the `Job` instance
+- Calling `terminate` from the [`collect`](/fork_join/fork_join-Collector/#collect) method of the `Collector`
 """

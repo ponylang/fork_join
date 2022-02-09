@@ -1,7 +1,7 @@
 interface Generator[A: Any #send]
   """
   A `Generator` creates data on demand which will be sent to various
-  [`Worker`](./fork_join-Worker/) instances where the data will be processed.
+  [`Worker`](/fork_join/fork_join-Worker/) instances where the data will be processed.
   """
   fun ref init(workers: USize)
     """

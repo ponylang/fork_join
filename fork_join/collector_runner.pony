@@ -1,7 +1,7 @@
 actor CollectorRunner[Input: Any #send, Output: Any #send]
   """
   `CollectorRunner` is an actor responsible for receiving messages for a
-  [`Collector`](./fork_join-Collector/) and coordinating job lifecycle with the
+  [`Collector`](/fork_join/fork_join-Collector/) and coordinating job lifecycle with the
   other `fork_join` library actors.
   """
   var _terminating: Bool = false
