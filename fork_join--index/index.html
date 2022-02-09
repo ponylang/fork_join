@@ -540,8 +540,8 @@
                 <h1 id="forkjoin-package">Fork/join package<a class="headerlink" href="#forkjoin-package" title="Permanent link">&para;</a></h1>
 <p>fork/join package is a parallel processing framework. It handles much of the
 plumbing required to distribute a data processing tasks across multiple actors.</p>
-<p><code>fork_join</code> is used by creating a <a href="./fork_join-Job/"><code>Job</code></a> and then sending a
-<code>start</code> message to begin processing.</p>
+<p><code>fork_join</code> is used by creating a <a href="/fork_join/fork_join-Job/"><code>Job</code></a> and
+then sending a <code>start</code> message to begin processing.</p>
 <pre><code class="language-pony">use fj = &quot;fork_join&quot;
 use &quot;runtime_info&quot;
 
@@ -571,23 +571,24 @@ pick an optimum amount of workers to create based on the number of Pony runtime
 scheduler threads available.</p>
 <h2 id="user-supplied-fork_join-components">User supplied <code>fork_join</code> components<a class="headerlink" href="#user-supplied-fork_join-components" title="Permanent link">&para;</a></h2>
 <p>To create a <code>fork_join</code> job, users must provide an implementation for 4 different interfaces supplied by the <code>fork_join</code> library.</p>
-<h3 id="worker"><a href="./fork_join-Worker/">Worker</a><a class="headerlink" href="#worker" title="Permanent link">&para;</a></h3>
-<p><code>Worker</code> instances are responsible for taking input data and an output that
-will be sent to a <code>Collector</code> instance for final tabulation.</p>
-<h3 id="workerbuilder"><a href="./fork_join-WorkerBuilder/">WorkerBuilder</a><a class="headerlink" href="#workerbuilder" title="Permanent link">&para;</a></h3>
-<p>A <code>WorkerBuilder</code> is a factory for creating instances of <code>Worker</code>. This
-component is used when setting up a job. After that, only the other 3 classes
-are used during processing runtime.</p>
-<h3 id="generator"><a href="./fork_join-Generator/">Generator</a><a class="headerlink" href="#generator" title="Permanent link">&para;</a></h3>
-<p>A <code>Generator</code> creates data on demand which will be sent to various <code>Worker</code>
-instances where the data will be processed.</p>
-<h3 id="collector"><a href="./fork_join-Collector/">Collector</a><a class="headerlink" href="#collector" title="Permanent link">&para;</a></h3>
-<p>A <code>Collector</code> is the final step in the processing pipeline. The <code>Collector</code>
-instance receives incremental results from <code>Worker</code> instances and creates a
-running tabulation.</p>
+<h3 id="worker">Worker<a class="headerlink" href="#worker" title="Permanent link">&para;</a></h3>
+<p><a href="/fork_join/fork_join-Worker/"><code>Worker</code></a> instances are responsible for taking
+input data and an output that will be sent to a <code>Collector</code> instance for final
+tabulation.</p>
+<h3 id="workerbuilder">WorkerBuilder<a class="headerlink" href="#workerbuilder" title="Permanent link">&para;</a></h3>
+<p>A [<code>WorkerBuilder</code>]((/fork_join/fork_join-WorkerBuilder/) is a factory for
+creating instances of <code>Worker</code>. This component is used when setting up a job.
+After that, only the other 3 classes are used during processing runtime.</p>
+<h3 id="generator">Generator<a class="headerlink" href="#generator" title="Permanent link">&para;</a></h3>
+<p>A <a href="/fork_join/fork_join-Generator/"><code>Generator</code></a> creates data on demand which
+will be sent to various <code>Worker</code> instances where the data will be processed.</p>
+<h3 id="collector">Collector<a class="headerlink" href="#collector" title="Permanent link">&para;</a></h3>
+<p>A <a href="/fork_join/fork_join-Collector/"><code>Collector</code></a> is the final step in the
+processing pipeline. The <code>Collector</code> instance receives incremental results
+from <code>Worker</code> instances and creates a running tabulation.</p>
 <p>When the job is finished, a <code>finish</code> message will be sent to the collector so
-it can take whatever steps are required to communicate the final calculation to the
-rest of the program or user.</p>
+it can take whatever steps are required to communicate the final calculation
+to the rest of the program or user.</p>
 <h2 id="example-usage">Example usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h2>
 <p>A variety of example application are available in the
 <a href="https://github.com/ponylang/fork_join/tree/main/examples">examples folder</a> in
@@ -661,8 +662,8 @@ message. Once the job has started, it will run until the data generator runs
 out of data (or never if the generator can create an infinite supply of data).</p>
 <p>A job can be ended early by:</p>
 <ul>
-<li>Sending a <a href="./fork_join-Job/#terminate"><code>terminate</code></a> message to the <code>Job</code> instance</li>
-<li>Calling <code>terminate</code> from the <a href="./fork_join-Collector/#collect"><code>collect</code></a> method of the <code>Collector</code></li>
+<li>Sending a <a href="/fork_join/fork_join-Job/#terminate"><code>terminate</code></a> message to the <code>Job</code> instance</li>
+<li>Calling <code>terminate</code> from the <a href="/fork_join/fork_join-Collector/#collect"><code>collect</code></a> method of the <code>Collector</code></li>
 </ul>
 <h2 id="public-types">Public Types<a class="headerlink" href="#public-types" title="Permanent link">&para;</a></h2>
 <ul>

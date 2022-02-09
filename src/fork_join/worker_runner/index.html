@@ -321,7 +321,7 @@
                 <pre><code class="language-pony-full-source">actor WorkerRunner[Input: Any #send, Output: Any #send]
   &quot;&quot;&quot;
   `WorkerRunner` is responsible for delivering data to
-  [Worker](./fork_join-Worker/) instances for processing and for coordinating
+  [Worker](/fork_join/fork_join-Worker/) instances for processing and for coordinating
   the job lifecycle with other `fork_join` library actors.
   &quot;&quot;&quot;
   let _coordinator: _Coordinator[Input, Output]
