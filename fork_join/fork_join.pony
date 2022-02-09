@@ -50,7 +50,7 @@ tabulation.
 
 ### WorkerBuilder
 
-A [`WorkerBuilder`]((/fork_join/fork_join-WorkerBuilder/) is a factory for
+A [`WorkerBuilder`](/fork_join/fork_join-WorkerBuilder/) is a factory for
 creating instances of `Worker`. This component is used when setting up a job.
 After that, only the other 3 classes are used during processing runtime.
 
