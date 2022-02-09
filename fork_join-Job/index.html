@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -496,16 +496,20 @@
                 
                 
                 <h1 id="jobinput-any-send-output-any-send">Job[Input: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send, Output: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send]<a class="headerlink" href="#jobinput-any-send-output-any-send" title="Permanent link">&para;</a></h1>
-<p><span class="source-link"><a href="../src/fork_join/job/#L2">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/job/#L3">[Source]</a></span></p>
+<p><code>Job</code> sets up a new <code>fork_join</code> processing task and provides the user with a
+means to start the job and terminate it before the
+<a href="./fork_join-Generator/"><code>Generator</code></a> runs out of data.</p>
 <pre><code class="language-pony">actor tag Job[Input: Any #send, Output: Any #send]
 </code></pre>
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <h3 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/job/#L6">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/job/#L12">[Source]</a></span></p>
 <pre><code class="language-pony">new tag create(
   worker_builder: WorkerBuilder[Input, Output] iso,
   generator: Generator[Input] iso,
   collector: Collector[Input, Output] iso,
+  auth: SchedulerInfoAuth val,
   max_workers: USize val = 0)
 : Job[Input, Output] tag^
 </code></pre>
@@ -514,6 +518,7 @@
 <li>worker_builder: <a href="../fork_join-WorkerBuilder/">WorkerBuilder</a>[Input, Output] iso</li>
 <li>generator: <a href="../fork_join-Generator/">Generator</a>[Input] iso</li>
 <li>collector: <a href="../fork_join-Collector/">Collector</a>[Input, Output] iso</li>
+<li>auth: <a href="https://stdlib.ponylang.io/runtime_info-SchedulerInfoAuth/">SchedulerInfoAuth</a> val</li>
 <li>max_workers: <a href="https://stdlib.ponylang.io/builtin-USize/">USize</a> val = 0</li>
 </ul>
 <h4 id="returns">Returns<a class="headerlink" href="#returns" title="Permanent link">&para;</a></h4>
@@ -523,13 +528,13 @@
 <hr />
 <h2 id="public-behaviours">Public Behaviours<a class="headerlink" href="#public-behaviours" title="Permanent link">&para;</a></h2>
 <h3 id="start">start<a class="headerlink" href="#start" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/job/#L16">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/job/#L24">[Source]</a></span></p>
 <p>Start the job.</p>
 <pre><code class="language-pony">be start()
 </code></pre>
 <hr />
 <h3 id="terminate">terminate<a class="headerlink" href="#terminate" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/job/#L25">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/job/#L33">[Source]</a></span></p>
 <p>End the job before the generator has run out of data.</p>
 <pre><code class="language-pony">be terminate()
 </code></pre>
@@ -607,7 +612,7 @@
     
     <script src="../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
       
     
     

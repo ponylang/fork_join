@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -318,8 +318,12 @@
                 
                   <h1>Worker runner</h1>
                 
-                <pre><code class="language-pony-full-source">// TODO: needs class level documentation
-actor WorkerRunner[Input: Any #send, Output: Any #send]
+                <pre><code class="language-pony-full-source">actor WorkerRunner[Input: Any #send, Output: Any #send]
+  &quot;&quot;&quot;
+  `WorkerRunner` is responsible for delivering data to
+  [Worker](./fork_join-Worker/) instances for processing and for coordinating
+  the job lifecycle with other `fork_join` library actors.
+  &quot;&quot;&quot;
   let _coordinator: _Coordinator[Input, Output]
   let _collector: CollectorRunner[Input, Output]
   let _notify: Worker[Input, Output]
@@ -412,7 +416,7 @@ actor WorkerRunner[Input: Any #send, Output: Any #send]
     
     <script src="../../../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:"../../.."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:"../../.."}})</script>
       
     
     

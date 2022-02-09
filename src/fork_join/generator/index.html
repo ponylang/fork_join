@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -319,6 +319,10 @@
                   <h1>Generator</h1>
                 
                 <pre><code class="language-pony-full-source">interface Generator[A: Any #send]
+  &quot;&quot;&quot;
+  A `Generator` creates data on demand which will be sent to various
+  [`Worker`](./fork_join-Worker/) instances where the data will be processed.
+  &quot;&quot;&quot;
   fun ref init(workers: USize)
     &quot;&quot;&quot;
     Called before the first time the generator is called. Allows the generator
@@ -329,7 +333,7 @@
     &quot;&quot;&quot;
     Called each time a worker needs data.
 
-    If not additional data is available, `error` should be called.
+    If no additional data is available, `error` should be returned.
     &quot;&quot;&quot;
 
 </code></pre>
@@ -371,7 +375,7 @@
     
     <script src="../../../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:"../../.."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:"../../.."}})</script>
       
     
     

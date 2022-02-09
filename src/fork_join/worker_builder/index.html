@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -318,8 +318,10 @@
                 
                   <h1>Worker builder</h1>
                 
-                <pre><code class="language-pony-full-source">// TODO: top-level documentation
-interface WorkerBuilder[Input: Any #send, Output: Any #send]
+                <pre><code class="language-pony-full-source">interface WorkerBuilder[Input: Any #send, Output: Any #send]
+  &quot;&quot;&quot;
+  A `WorkerBuilder` is a factory for creating instances of `Worker`.
+  &quot;&quot;&quot;
   fun ref apply(): Worker[Input, Output] iso^
     &quot;&quot;&quot;
     Called when another worker is needed.
@@ -364,7 +366,7 @@ interface WorkerBuilder[Input: Any #send, Output: Any #send]
     
     <script src="../../../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:"../../.."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:"../../.."}})</script>
       
     
     

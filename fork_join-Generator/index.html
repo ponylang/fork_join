@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -449,11 +449,13 @@
                 
                 <h1 id="generatora-any-send">Generator[A: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send]<a class="headerlink" href="#generatora-any-send" title="Permanent link">&para;</a></h1>
 <p><span class="source-link"><a href="../src/fork_join/generator/#L1">[Source]</a></span></p>
+<p>A <code>Generator</code> creates data on demand which will be sent to various
+<a href="./fork_join-Worker/"><code>Worker</code></a> instances where the data will be processed.</p>
 <pre><code class="language-pony">interface ref Generator[A: Any #send]
 </code></pre>
 <h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
 <h3 id="init">init<a class="headerlink" href="#init" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/generator/#L2">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/generator/#L6">[Source]</a></span></p>
 <p>Called before the first time the generator is called. Allows the generator
 to distribute work based on the number of workers available.</p>
 <pre><code class="language-pony">fun ref init(
@@ -470,9 +472,9 @@ to distribute work based on the number of workers available.</p>
 </ul>
 <hr />
 <h3 id="apply">apply<a class="headerlink" href="#apply" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/generator/#L8">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/generator/#L12">[Source]</a></span></p>
 <p>Called each time a worker needs data.</p>
-<p>If not additional data is available, <code>error</code> should be called.</p>
+<p>If no additional data is available, <code>error</code> should be returned.</p>
 <pre><code class="language-pony">fun ref apply()
 : A^ ?
 </code></pre>
@@ -554,7 +556,7 @@ to distribute work based on the number of workers available.</p>
     
     <script src="../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
       
     
     

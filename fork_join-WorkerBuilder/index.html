@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -430,12 +430,13 @@
                 
                 
                 <h1 id="workerbuilderinput-any-send-output-any-send">WorkerBuilder[Input: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send, Output: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send]<a class="headerlink" href="#workerbuilderinput-any-send-output-any-send" title="Permanent link">&para;</a></h1>
-<p><span class="source-link"><a href="../src/fork_join/worker_builder/#L2">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/worker_builder/#L1">[Source]</a></span></p>
+<p>A <code>WorkerBuilder</code> is a factory for creating instances of <code>Worker</code>.</p>
 <pre><code class="language-pony">interface ref WorkerBuilder[Input: Any #send, Output: Any #send]
 </code></pre>
 <h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
 <h3 id="apply">apply<a class="headerlink" href="#apply" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/worker_builder/#L3">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/worker_builder/#L5">[Source]</a></span></p>
 <p>Called when another worker is needed.</p>
 <pre><code class="language-pony">fun ref apply()
 : Worker[Input, Output] iso^
@@ -518,7 +519,7 @@
     
     <script src="../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
       
     
     

@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -496,12 +496,15 @@
                 
                 
                 <h1 id="workerrunnerinput-any-send-output-any-send">WorkerRunner[Input: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send, Output: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send]<a class="headerlink" href="#workerrunnerinput-any-send-output-any-send" title="Permanent link">&para;</a></h1>
-<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L2">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L1">[Source]</a></span></p>
+<p><code>WorkerRunner</code> is responsible for delivering data to
+<a href="./fork_join-Worker/">Worker</a> instances for processing and for coordinating
+the job lifecycle with other <code>fork_join</code> library actors.</p>
 <pre><code class="language-pony">actor tag WorkerRunner[Input: Any #send, Output: Any #send]
 </code></pre>
 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <h3 id="create">create<a class="headerlink" href="#create" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L9">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L13">[Source]</a></span></p>
 <pre><code class="language-pony">new tag create(
   coordinator: _Coordinator[Input, Output] tag,
   collector: CollectorRunner[Input, Output] tag,
@@ -521,7 +524,7 @@
 <hr />
 <h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
 <h3 id="deliver">deliver<a class="headerlink" href="#deliver" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L17">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L21">[Source]</a></span></p>
 <p>Called to send a result to the collector and request additional work from
 the coordinator.</p>
 <pre><code class="language-pony">fun ref deliver(
@@ -538,7 +541,7 @@ the coordinator.</p>
 </ul>
 <hr />
 <h3 id="yield">yield<a class="headerlink" href="#yield" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L25">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/worker_runner/#L29">[Source]</a></span></p>
 <p>Called to have the worker yield the CPU and continue later.</p>
 <pre><code class="language-pony">fun ref yield()
 : None val
@@ -621,7 +624,7 @@ the coordinator.</p>
     
     <script src="../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
       
     
     

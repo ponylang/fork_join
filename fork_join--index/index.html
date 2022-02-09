@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -72,7 +72,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#public-types" tabindex="1" class="md-skip">
+      <a href="#forkjoin-package" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -207,6 +207,8 @@
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
+      
+    
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
         Package
@@ -220,11 +222,82 @@
 <nav class="md-nav md-nav--secondary">
   
   
+    
+  
   
   
   
     <label class="md-nav__title" for="__toc">Table of contents</label>
     <ul class="md-nav__list" data-md-scrollfix>
+      
+        
+          <li class="md-nav__item">
+    <a href="#user-supplied-fork_join-components" title="User supplied fork_join components" class="md-nav__link">
+    User supplied fork_join components
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#worker" title="Worker" class="md-nav__link">
+    Worker
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#workerbuilder" title="WorkerBuilder" class="md-nav__link">
+    WorkerBuilder
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#generator" title="Generator" class="md-nav__link">
+    Generator
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#collector" title="Collector" class="md-nav__link">
+    Collector
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#example-usage" title="Example usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#job-lifecycle" title="Job lifecycle" class="md-nav__link">
+    Job lifecycle
+  </a>
+  
+</li>
+        
       
         
           <li class="md-nav__item">
@@ -361,11 +434,82 @@
 <nav class="md-nav md-nav--secondary">
   
   
+    
+  
   
   
   
     <label class="md-nav__title" for="__toc">Table of contents</label>
     <ul class="md-nav__list" data-md-scrollfix>
+      
+        
+          <li class="md-nav__item">
+    <a href="#user-supplied-fork_join-components" title="User supplied fork_join components" class="md-nav__link">
+    User supplied fork_join components
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          
+            <li class="md-nav__item">
+    <a href="#worker" title="Worker" class="md-nav__link">
+    Worker
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#workerbuilder" title="WorkerBuilder" class="md-nav__link">
+    WorkerBuilder
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#generator" title="Generator" class="md-nav__link">
+    Generator
+  </a>
+  
+</li>
+          
+        
+          
+            <li class="md-nav__item">
+    <a href="#collector" title="Collector" class="md-nav__link">
+    Collector
+  </a>
+  
+</li>
+          
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#example-usage" title="Example usage" class="md-nav__link">
+    Example usage
+  </a>
+  
+</li>
+        
+      
+        
+          <li class="md-nav__item">
+    <a href="#job-lifecycle" title="Job lifecycle" class="md-nav__link">
+    Job lifecycle
+  </a>
+  
+</li>
+        
       
         
           <li class="md-nav__item">
@@ -393,9 +537,134 @@
               
                 
                 
-                  <h1>Package</h1>
-                
-                <h2 id="public-types">Public Types<a class="headerlink" href="#public-types" title="Permanent link">&para;</a></h2>
+                <h1 id="forkjoin-package">Fork/join package<a class="headerlink" href="#forkjoin-package" title="Permanent link">&para;</a></h1>
+<p>fork/join package is a parallel processing framework. It handles much of the
+plumbing required to distribute a data processing tasks across multiple actors.</p>
+<p><code>fork_join</code> is used by creating a <a href="./fork_join-Job/"><code>Job</code></a> and then sending a
+<code>start</code> message to begin processing.</p>
+<pre><code class="language-pony">use fj = &quot;fork_join&quot;
+use &quot;runtime_info&quot;
+
+actor Main
+  new create(env: Env) =&gt;
+    let job = fj.Job[USize, String](
+      WorkerBuilder,
+      Generator,
+      StringCollector(env.out),
+      SchedulerInfoAuth(env.root))
+
+    job.start()
+</code></pre>
+<p><code>Job</code> takes 3 classes that are implemented by library users to implement
+functionality and in turn, the <code>fork_join</code> library orchestrates the interactions
+amongst the user supplied classes.</p>
+<p><code>Job</code> requires:</p>
+<ul>
+<li>a <code>WorkerBuilder</code></li>
+<li>a <code>Generator</code></li>
+<li>a <code>Collector</code></li>
+</ul>
+<p>In addition to the 3 classes required to start a <code>Job</code>, users of <code>fork_join</code>
+will need to create 1 additional class; one that provides <code>Worker</code>.
+Additionally, a <code>SchedulerInfoAuth</code> auth is required to allow the library to
+pick an optimum amount of workers to create based on the number of Pony runtime
+scheduler threads available.</p>
+<h2 id="user-supplied-fork_join-components">User supplied <code>fork_join</code> components<a class="headerlink" href="#user-supplied-fork_join-components" title="Permanent link">&para;</a></h2>
+<p>To create a <code>fork_join</code> job, users must provide an implementation for 4 different interfaces supplied by the <code>fork_join</code> library.</p>
+<h3 id="worker"><a href="./fork_join-Worker/">Worker</a><a class="headerlink" href="#worker" title="Permanent link">&para;</a></h3>
+<p><code>Worker</code> instances are responsible for taking input data and an output that
+will be sent to a <code>Collector</code> instance for final tabulation.</p>
+<h3 id="workerbuilder"><a href="./fork_join-WorkerBuilder/">WorkerBuilder</a><a class="headerlink" href="#workerbuilder" title="Permanent link">&para;</a></h3>
+<p>A <code>WorkerBuilder</code> is a factory for creating instances of <code>Worker</code>. This
+component is used when setting up a job. After that, only the other 3 classes
+are used during processing runtime.</p>
+<h3 id="generator"><a href="./fork_join-Generator/">Generator</a><a class="headerlink" href="#generator" title="Permanent link">&para;</a></h3>
+<p>A <code>Generator</code> creates data on demand which will be sent to various <code>Worker</code>
+instances where the data will be processed.</p>
+<h3 id="collector"><a href="./fork_join-Collector/">Collector</a><a class="headerlink" href="#collector" title="Permanent link">&para;</a></h3>
+<p>A <code>Collector</code> is the final step in the processing pipeline. The <code>Collector</code>
+instance receives incremental results from <code>Worker</code> instances and creates a
+running tabulation.</p>
+<p>When the job is finished, a <code>finish</code> message will be sent to the collector so
+it can take whatever steps are required to communicate the final calculation to the
+rest of the program or user.</p>
+<h2 id="example-usage">Example usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h2>
+<p>A variety of example application are available in the
+<a href="https://github.com/ponylang/fork_join/tree/main/examples">examples folder</a> in
+the fork_join repository on GitHub.</p>
+<p>Below is a simple example program with a generator that creates random numbers,
+workers that pass the numbers through without any procesing, and a collector
+that stores the numbers in an array until the job is finished. At this point
+the collector will print the collected numbers to standard output.</p>
+<p>The job finishes when the generator indicates that it is out of data by
+triggering an <code>error</code> if the random number it generates is evenly divisible by
+1000.</p>
+<pre><code class="language-pony">use fj = &quot;fork_join&quot;
+use &quot;random&quot;
+use &quot;runtime_info&quot;
+
+actor Main
+  new create(env: Env) =&gt;
+    let job = fj.Job[USize, String](
+      WorkerBuilder,
+      Generator,
+      StringCollector(env.out),
+      SchedulerInfoAuth(env.root))
+    job.start()
+
+class WorkerBuilder is fj.WorkerBuilder[USize, String]
+  fun ref apply(): fj.Worker[USize, String] iso^ =&gt;
+    USizeToString
+
+class Generator is fj.Generator[USize]
+  let _rand: Rand = _rand.create()
+
+  fun ref init(workers: USize) =&gt;
+    None
+
+  fun ref apply(): USize ? =&gt;
+    let x = _rand.next().usize()
+    if (x % 1000) == 0 then
+      error
+    end
+    x
+
+class StringCollector is fj.Collector[USize, String]
+  let _strings: Array[String] = _strings.create()
+  let _out: OutStream
+
+  new iso create(out: OutStream) =&gt;
+    _out = out
+
+  fun ref collect(runner: fj.CollectorRunner[USize, String] ref,
+    result: String)
+  =&gt;
+    _strings.push(result)
+
+  fun ref finish() =&gt;
+    for s in _strings.values() do
+      _out.print(s)
+    end
+
+class USizeToString is fj.Worker[USize, String]
+  var _usize: USize = 0
+
+  fun ref receive(work_set: USize) =&gt;
+    _usize = work_set
+
+  fun ref process(runner: fj.WorkerRunner[USize, String] ref) =&gt;
+    runner.deliver(_usize.string())
+</code></pre>
+<h2 id="job-lifecycle"><code>Job</code> lifecycle<a class="headerlink" href="#job-lifecycle" title="Permanent link">&para;</a></h2>
+<p>Once a <code>Job</code> is created, nothing will happen until it is sent a <code>start</code>
+message. Once the job has started, it will run until the data generator runs
+out of data (or never if the generator can create an infinite supply of data).</p>
+<p>A job can be ended early by:</p>
+<ul>
+<li>Sending a <a href="./fork_join-Job/#terminate"><code>terminate</code></a> message to the <code>Job</code> instance</li>
+<li>Calling <code>terminate</code> from the <a href="./fork_join-Collector/#collect"><code>collect</code></a> method of the <code>Collector</code></li>
+</ul>
+<h2 id="public-types">Public Types<a class="headerlink" href="#public-types" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../fork_join-WorkerRunner/">actor WorkerRunner</a></li>
 <li><a href="../fork_join-WorkerBuilder/">interface WorkerBuilder</a></li>
@@ -479,7 +748,7 @@
     
     <script src="../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
       
     
     

@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -448,12 +448,18 @@
                 
                 
                 <h1 id="collectorinput-any-send-output-any-send">Collector[Input: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send, Output: <a href="https://stdlib.ponylang.io/builtin-Any/">Any</a> #send]<a class="headerlink" href="#collectorinput-any-send-output-any-send" title="Permanent link">&para;</a></h1>
-<p><span class="source-link"><a href="../src/fork_join/collector/#L2">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/collector/#L1">[Source]</a></span></p>
+<p>A <code>Collector</code> is the final step in the processing pipeline. The <code>Collector</code>
+instance receives incremental results from <a href="./fork_join-Worker/"><code>Worker</code></a>
+instances and creates a running tabulation.</p>
+<p>When a <code>fork_join</code> job is finished, a <code>finish</code> message will be sent to the
+collector so it can take whatever steps are required to communicate the final
+collected results.</p>
 <pre><code class="language-pony">interface ref Collector[Input: Any #send, Output: Any #send]
 </code></pre>
 <h2 id="public-functions">Public Functions<a class="headerlink" href="#public-functions" title="Permanent link">&para;</a></h2>
 <h3 id="collect">collect<a class="headerlink" href="#collect" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/collector/#L3">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/collector/#L11">[Source]</a></span></p>
 <p>Called when results are received from a worker.</p>
 <p>If you need to end processing early, you can call <code>terminate</code> on
 <code>runner</code>. Otherwise, the job will continue.</p>
@@ -473,7 +479,7 @@
 </ul>
 <hr />
 <h3 id="finish">finish<a class="headerlink" href="#finish" title="Permanent link">&para;</a></h3>
-<p><span class="source-link"><a href="../src/fork_join/collector/#L13">[Source]</a></span></p>
+<p><span class="source-link"><a href="../src/fork_join/collector/#L21">[Source]</a></span></p>
 <p>Called when all workers have reported in their results.</p>
 <pre><code class="language-pony">fun ref finish()
 : None val
@@ -542,7 +548,7 @@
     
     <script src="../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:".."}})</script>
       
     
     

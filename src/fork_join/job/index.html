@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../../../assets/images/logo.png">
-      <meta name="generator" content="mkdocs-1.1.2, mkdocs-ponylang-0.2.8">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-ponylang-0.2.8">
     
     
       
@@ -318,19 +318,27 @@
                 
                   <h1>Job</h1>
                 
-                <pre><code class="language-pony-full-source">// TODO: top-level documentation
+                <pre><code class="language-pony-full-source">use &quot;runtime_info&quot;
+
 actor Job[Input: Any #send, Output: Any #send]
+  &quot;&quot;&quot;
+  `Job` sets up a new `fork_join` processing task and provides the user with a
+  means to start the job and terminate it before the
+  [`Generator`](./fork_join-Generator/) runs out of data.
+  &quot;&quot;&quot;
   var _status: _JobStatus = _NotYetStarted
   let _coordinator: _Coordinator[Input, Output]
 
   new create(worker_builder: WorkerBuilder[Input, Output] iso,
     generator: Generator[Input] iso,
     collector: Collector[Input, Output] iso,
+    auth: SchedulerInfoAuth,
     max_workers: USize = 0)
   =&gt;
     _coordinator = _Coordinator[Input, Output](consume worker_builder,
       consume generator,
       consume collector,
+      auth,
       max_workers)
 
   be start() =&gt;
@@ -392,7 +400,7 @@ type _JobStatus is (_Started | _Terminating | _NotYetStarted)
     
     <script src="../../../assets/javascripts/application.cb37bb38.js"></script>
       
-      <script>app.initialize({version:"1.1.2",url:{base:"../../.."}})</script>
+      <script>app.initialize({version:"1.2.3",url:{base:"../../.."}})</script>
       
     
     
