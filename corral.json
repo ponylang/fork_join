@@ -8,7 +8,7 @@
     "homepage": "https://github.com/ponylang/fork_joiin",
     "license": "BSD-2-Clause",
     "documentation_url": "https://ponylang.github.io/fork_join/",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "name": "fork_join"
   }
 }
