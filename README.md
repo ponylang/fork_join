@@ -9,7 +9,7 @@ fork_join is a beta-level project. The API might change going forward based on f
 ## Installation
 
 * Install [corral](https://github.com/ponylang/corral)
-* `corral add github.com/ponylang/fork_join.git --version 0.1.0`
+* `corral add github.com/ponylang/fork_join.git --version 0.1.1`
 * `corral fetch` to fetch your dependencies
 * `use "fork_join"` to include this package
 * `corral run -- ponyc` to compile your application
