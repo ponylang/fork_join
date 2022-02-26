@@ -1,4 +1,4 @@
-use "ponytest"
+use "pony_test"
 use "runtime_info"
 
 class \nodoc\ iso _TestCollectorTerminate is UnitTest
