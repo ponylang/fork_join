@@ -50,15 +50,15 @@ jobs:
       - name: Generate documentation
         run: /entrypoint.py
         env:
-          INPUT_SITE_URL: "https://ponylang.github.io/appdirs/"
-          INPUT_LIBRARY_NAME: "appdirs"
-          INPUT_DOCS_BUILD_DIR: "build/appdirs-docs"
+          INPUT_SITE_URL: "https://ponylang.github.io/fork_join/"
+          INPUT_LIBRARY_NAME: "fork_join"
+          INPUT_DOCS_BUILD_DIR: "build/fork_join-docs"
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: 'build/appdirs-docs/site/'
+          path: 'build/fork_join-docs/site/'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
