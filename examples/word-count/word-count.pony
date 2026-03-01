@@ -77,7 +77,7 @@ class WordCountTotaler is fj.Collector[String, WordCounts iso]
   fun ref collect(runner: fj.CollectorRunner[String, WordCounts iso] ref,
     result: WordCounts iso)
   =>
-    match _counts
+    match \exhaustive\ _counts
     | None =>
       // We haven't gotten any counts yet, instead of copying the map, let's
       // just keep the first one as our base to build upon
@@ -91,7 +91,7 @@ class WordCountTotaler is fj.Collector[String, WordCounts iso]
     end
 
   fun ref finish() =>
-    match _counts
+    match \exhaustive\ _counts
     | None =>
       _out.print("No words counted.")
     | let counts: WordCounts =>
