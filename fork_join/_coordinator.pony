@@ -19,11 +19,12 @@ actor _Coordinator[Input: Any #send, Output: Any #send]
     _generator = consume generator
     _collector_runner = CollectorRunner[Input, Output](consume collector, this)
 
-    _max_workers = if max_workers > 0 then
-      max_workers
-    else
-      Scheduler.schedulers(auth).usize()
-    end
+    _max_workers =
+      if max_workers > 0 then
+        max_workers
+      else
+        Scheduler.schedulers(auth).usize()
+      end
 
     _generator.init(_max_workers)
 
@@ -49,9 +50,11 @@ actor _Coordinator[Input: Any #send, Output: Any #send]
       var mw = _max_workers
       while true do
         // create worker
-        let w = WorkerRunner[Input, Output](this,
-          _collector_runner,
-          _worker_builder())
+        let w =
+          WorkerRunner[Input, Output](
+            this,
+            _collector_runner,
+            _worker_builder())
         _workers.set(w)
 
         // request data for the worker

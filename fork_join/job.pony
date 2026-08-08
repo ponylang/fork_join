@@ -15,11 +15,13 @@ actor Job[Input: Any #send, Output: Any #send]
     auth: SchedulerInfoAuth,
     max_workers: USize = 0)
   =>
-    _coordinator = _Coordinator[Input, Output](consume worker_builder,
-      consume generator,
-      consume collector,
-      auth,
-      max_workers)
+    _coordinator =
+      _Coordinator[Input, Output](
+        consume worker_builder,
+        consume generator,
+        consume collector,
+        auth,
+        max_workers)
 
   be start() =>
     """

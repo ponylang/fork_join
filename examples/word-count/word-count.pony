@@ -10,15 +10,18 @@ type WordCounts is Map[String, USize]
 actor Main
   new create(env: Env) =>
     try
-      let caps = recover val FileCaps.>set(FileRead).>set(FileStat) end
-      let fp = FilePath(FileAuth(env.root), env.args(1)?, caps)
+      let caps =
+        recover val FileCaps .> set(FileRead) .> set(FileStat) end
+      let fp =
+        FilePath(FileAuth(env.root), env.args(1)?, caps)
       let file = recover iso OpenFile(fp) as File end
 
-      let job = fj.Job[String, WordCounts iso](
-        WorkerBuilder,
-        FileReader(consume file),
-        WordCountTotaler(env.out),
-        SchedulerInfoAuth(env.root))
+      let job =
+        fj.Job[String, WordCounts iso](
+          WorkerBuilder,
+          FileReader(consume file),
+          WordCountTotaler(env.out),
+          SchedulerInfoAuth(env.root))
 
       job.start()
     else
@@ -27,10 +30,16 @@ actor Main
     end
 
 class WorkerBuilder is fj.WorkerBuilder[String, WordCounts iso]
+  """
+  Creates SplitAndCount workers.
+  """
   fun ref apply(): fj.Worker[String, WordCounts iso] iso^ =>
     SplitAndCount
 
 class SplitAndCount is fj.Worker[String, WordCounts iso]
+  """
+  Splits input text into words and counts their frequencies.
+  """
   var _working_set: String = ""
 
   fun ref receive(data: String) =>
@@ -39,22 +48,33 @@ class SplitAndCount is fj.Worker[String, WordCounts iso]
   fun ref process(
     runner: fj.WorkerRunner[String, WordCounts iso] ref)
   =>
-    let punctuation = """ !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~‘“ """
+    """
+    Split input into words, count each, and deliver the result.
+    """
+    let punctuation =
+      """ !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~'" """
     let words_and_counts = recover iso WordCounts end
     for line in _working_set.split("\n").values() do
       let cleaned =
-        recover val line.lower().>lstrip(punctuation)
-          .>rstrip(punctuation) end
+        recover val
+          line.lower()
+            .> lstrip(punctuation)
+            .> rstrip(punctuation)
+        end
       for word in cleaned.split(punctuation).values() do
-        words_and_counts.upsert(word,
+        words_and_counts.upsert(
+          word,
           1,
-          {(current, provided) => current + provided})
+          {(current, provided) => current + provided })
       end
     end
 
     runner.deliver(consume words_and_counts)
 
 class FileReader is fj.Generator[String]
+  """
+  Reads lines from a file, one per call.
+  """
   let _lines: FileLines
   var _workers: USize = 0
 
@@ -68,25 +88,28 @@ class FileReader is fj.Generator[String]
     _lines.next()?
 
 class WordCountTotaler is fj.Collector[String, WordCounts iso]
+  """
+  Merges per-worker word counts and prints the totals.
+  """
   var _counts: (WordCounts | None) = None
   let _out: OutStream
 
   new iso create(out: OutStream) =>
     _out = out
 
-  fun ref collect(runner: fj.CollectorRunner[String, WordCounts iso] ref,
+  fun ref collect(
+    runner: fj.CollectorRunner[String, WordCounts iso] ref,
     result: WordCounts iso)
   =>
     match \exhaustive\ _counts
     | None =>
-      // We haven't gotten any counts yet, instead of copying the map, let's
-      // just keep the first one as our base to build upon
       _counts = consume result
     | let counts: WordCounts =>
       for (word, count) in (consume result).pairs() do
-        counts.upsert(word,
-        count,
-        {(current, provided) => current + provided})
+        counts.upsert(
+          word,
+          count,
+          {(current, provided) => current + provided })
       end
     end
 
@@ -100,4 +123,3 @@ class WordCountTotaler is fj.Collector[String, WordCounts iso]
         _out.print(word + ":" + count.string())
       end
     end
-

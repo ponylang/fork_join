@@ -18,11 +18,12 @@ class \nodoc\ iso _TestEndToEnd is UnitTest
     let expected: Array[U8] val = recover val [1;3;5;7;9;57;4;3;2;1;88;18] end
     let input: Array[U8] iso = recover iso expected.clone() end
 
-    let job = Job[Array[U8] iso, Array[U8] val](
-      _EndToEndBuilder,
-      _EndToEndGenerator(consume input),
-      _EndToEndCollector(h, expected),
-      SchedulerInfoAuth(h.env.root))
+    let job =
+      Job[Array[U8] iso, Array[U8] val](
+        _EndToEndBuilder,
+        _EndToEndGenerator(consume input),
+        _EndToEndCollector(h, expected),
+        SchedulerInfoAuth(h.env.root))
 
     job.start()
 

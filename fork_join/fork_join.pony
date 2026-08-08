@@ -40,7 +40,8 @@ scheduler threads available.
 
 ## User supplied `fork_join` components
 
-To create a `fork_join` job, users must provide an implementation for 4 different interfaces supplied by the `fork_join` library.
+To create a `fork_join` job, users must provide an implementation
+for 4 different interfaces supplied by the `fork_join` library.
 
 ### Worker
 
@@ -150,6 +151,9 @@ out of data (or never if the generator can create an infinite supply of data).
 
 A job can be ended early by:
 
-- Sending a [`terminate`](/fork_join/fork_join-Job/#terminate) message to the `Job` instance
-- Calling `terminate` from the [`collect`](/fork_join/fork_join-Collector/#collect) method of the `Collector`
+- Sending a [`terminate`](/fork_join/fork_join-Job/#terminate)
+  message to the `Job` instance
+- Calling `terminate` from the
+  [`collect`](/fork_join/fork_join-Collector/#collect) method
+  of the `Collector`
 """
