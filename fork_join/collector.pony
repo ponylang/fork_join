@@ -1,8 +1,9 @@
 interface Collector[Input: Any #send, Output: Any #send]
   """
   A `Collector` is the final step in the processing pipeline. The `Collector`
-  instance receives incremental results from [`Worker`](/fork_join/fork_join-Worker/)
-  instances and creates a running tabulation.
+  instance receives incremental results from
+  [`Worker`](/fork_join/fork_join-Worker/) instances and creates
+  a running tabulation.
 
   When a `fork_join` job is finished, a `finish` message will be sent to the
   collector so it can take whatever steps are required to communicate the final

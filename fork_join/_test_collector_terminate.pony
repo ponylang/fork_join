@@ -9,8 +9,9 @@ class \nodoc\ iso _TestCollectorTerminate is UnitTest
   because the generator has no end and will keep producing data forever. If
   terminate didn't work then the job should continue running.
 
-  This test assumes that `finish` isn't called incorrectly before a job is done. We are reliant on the end-to-end test to provide give us a some
-  provability of that axiom.
+  This test assumes that `finish` isn't called incorrectly before a
+  job is done. We are reliant on the end-to-end test to provide give
+  us some provability of that axiom.
 
   We don't test the results expected as there's not a deterministic number of
   results that will be collected despite our always sending the termination
@@ -23,11 +24,12 @@ class \nodoc\ iso _TestCollectorTerminate is UnitTest
     h.long_test(1_000_000_000)
     h.expect_action("collector.finish()")
 
-    let job = Job[U8, U8](
-      _CollectorTerminateBuilder,
-      _CollectorTerminateGenerator,
-      _CollectorTerminateCollector(h),
-      SchedulerInfoAuth(h.env.root))
+    let job =
+      Job[U8, U8](
+        _CollectorTerminateBuilder,
+        _CollectorTerminateGenerator,
+        _CollectorTerminateCollector(h),
+        SchedulerInfoAuth(h.env.root))
 
     job.start()
 

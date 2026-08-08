@@ -6,18 +6,25 @@ use "runtime_info"
 
 actor Main
   new create(env: Env) =>
-    let job = fj.Job[USize, String](
-      WorkerBuilder,
-      Generator,
-      StringCollector(env.out),
-      SchedulerInfoAuth(env.root))
+    let job =
+      fj.Job[USize, String](
+        WorkerBuilder,
+        Generator,
+        StringCollector(env.out),
+        SchedulerInfoAuth(env.root))
     job.start()
 
 class WorkerBuilder is fj.WorkerBuilder[USize, String]
+  """
+  Creates USizeToString workers.
+  """
   fun ref apply(): fj.Worker[USize, String] iso^ =>
     USizeToString
 
 class Generator is fj.Generator[USize]
+  """
+  Produces random numbers, ending when one is divisible by 1000.
+  """
   let _rand: Rand = _rand.create()
 
   fun ref init(workers: USize) =>
@@ -31,6 +38,9 @@ class Generator is fj.Generator[USize]
     x
 
 class StringCollector is fj.Collector[USize, String]
+  """
+  Collects string results and prints them when the job finishes.
+  """
   let _strings: Array[String] = _strings.create()
   let _out: OutStream
 
@@ -48,6 +58,9 @@ class StringCollector is fj.Collector[USize, String]
     end
 
 class USizeToString is fj.Worker[USize, String]
+  """
+  Converts a USize to its string representation.
+  """
   var _usize: USize = 0
 
   fun ref receive(work_set: USize) =>
@@ -55,4 +68,3 @@ class USizeToString is fj.Worker[USize, String]
 
   fun ref process(runner: fj.WorkerRunner[USize, String] ref) =>
     runner.deliver(_usize.string())
-

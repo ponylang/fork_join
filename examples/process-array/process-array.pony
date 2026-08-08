@@ -6,18 +6,25 @@ use "runtime_info"
 actor Main
   new create(env: Env) =>
     let array: Array[U8] iso = recover iso [ 201;202;3;4;5;6;7;8;9;10 ] end
-    let job = fj.Job[Array[U8] iso, USize](
-      WorkerBuilder,
-      Generator(consume array),
-      AddingCollector(env.out),
-      SchedulerInfoAuth(env.root))
+    let job =
+      fj.Job[Array[U8] iso, USize](
+        WorkerBuilder,
+        Generator(consume array),
+        AddingCollector(env.out),
+        SchedulerInfoAuth(env.root))
     job.start()
 
 class WorkerBuilder is fj.WorkerBuilder[Array[U8] iso, USize]
+  """
+  Creates `Adder` worker instances.
+  """
   fun ref apply(): fj.Worker[Array[U8] iso, USize] iso^ =>
     Adder
 
 class Generator is fj.Generator[Array[U8] iso]
+  """
+  Splits an array into chunks distributed across workers.
+  """
   var _working_set: Array[U8] iso
   var _distribution_set: Array[USize] = _distribution_set.create()
 
@@ -28,6 +35,9 @@ class Generator is fj.Generator[Array[U8] iso]
     _distribution_set = fj.EvenlySplitDataElements(_working_set.size(), workers)
 
   fun ref apply(): Array[U8] iso^ ? =>
+    """
+    Return the next batch of elements, or error when none remain.
+    """
     if _working_set.size() == 0 then
       error
     end
@@ -37,6 +47,9 @@ class Generator is fj.Generator[Array[U8] iso]
     consume batch
 
 class AddingCollector is fj.Collector[Array[U8] iso, USize]
+  """
+  Sums worker results and prints the total.
+  """
   var _total: USize = 0
   let _out: OutStream
 
@@ -52,6 +65,9 @@ class AddingCollector is fj.Collector[Array[U8] iso, USize]
     _out.print(_total.string())
 
 class Adder is fj.Worker[Array[U8] iso, USize]
+  """
+  Sums the elements of a `U8` array.
+  """
   var _working_set: Array[U8] = _working_set.create()
 
   fun ref receive(work_set: Array[U8] iso) =>

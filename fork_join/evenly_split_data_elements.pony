@@ -11,6 +11,9 @@ primitive EvenlySplitDataElements
   data_elements to give to a worker corresponding to the bucket.
   """
   fun apply(data_elements: USize, split_across: USize): Array[USize] iso^ =>
+    """
+    Split `data_elements` across `split_across` buckets as evenly as possible.
+    """
     // If the number data elements were equal to number of workers to split
     // across then each worker would get 1 element.
     // We use division to get a basic value to insert.
