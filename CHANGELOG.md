@@ -12,7 +12,6 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
-- Update to work with Pony 0.69.0 ([PR #60](https://github.com/ponylang/fork_join/pull/60))
 
 ## [0.1.1] - 2022-02-26
 
