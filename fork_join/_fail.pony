@@ -9,10 +9,10 @@ primitive _Fail
   fun apply(loc: SourceLoc = __loc) =>
     @fprintf(
       @pony_os_stderr(),
-      ("This should never happen: failure in %s at line %s\n"
-        + "Please open an issue at "
-        + "https://github.com/ponylang/fork_join"
-        + "/issues/new")
+      ("This should never happen: failure in %s at line %s\n" +
+        "Please open an issue at " +
+        "https://github.com/ponylang/fork_join" +
+        "/issues/new")
         .cstring(),
       loc.file().cstring(),
       loc.line().string().cstring())
