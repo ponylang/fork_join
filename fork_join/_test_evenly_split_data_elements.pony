@@ -1,6 +1,7 @@
-use "pony_test"
+use pt = "pony_test"
 
-class \nodoc\ iso _TestEvenlySplitDataElementsWithMoreDataElements is UnitTest
+class \nodoc\ iso _TestEvenlySplitDataElementsWithMoreDataElements
+  is pt.UnitTest
   """
   Test splitting data elements across x workers where there's more data elements
   than workers and the work isn't evenly splittable.
@@ -8,7 +9,7 @@ class \nodoc\ iso _TestEvenlySplitDataElementsWithMoreDataElements is UnitTest
   fun name(): String =>
     "fork_join/EvenlySplitDataElements/more"
 
-  fun apply(h: TestHelper) =>
+  fun apply(h: pt.TestHelper) =>
     var expected: Array[USize] = [2;1]
     var actual: Array[USize] val = EvenlySplitDataElements(3, 2)
     h.assert_array_eq[USize](expected, actual)
@@ -25,7 +26,8 @@ class \nodoc\ iso _TestEvenlySplitDataElementsWithMoreDataElements is UnitTest
     actual = EvenlySplitDataElements(21, 5)
     h.assert_array_eq[USize](expected, actual)
 
-class \nodoc\ iso _TestEvenlySplitDataElementsWithLessDataElements is UnitTest
+class \nodoc\ iso _TestEvenlySplitDataElementsWithLessDataElements
+  is pt.UnitTest
   """
   Test splitting elements across x workers where there are fewer data elements
   than workers and the work isn't evenly splittable.
@@ -34,7 +36,7 @@ class \nodoc\ iso _TestEvenlySplitDataElementsWithLessDataElements is UnitTest
   fun name(): String =>
     "fork_join/EvenlySplitDataElements/less"
 
-  fun apply(h: TestHelper) =>
+  fun apply(h: pt.TestHelper) =>
     var expected: Array[USize] = [1;0]
     var actual: Array[USize] val = EvenlySplitDataElements(1, 2)
     h.assert_array_eq[USize](expected, actual)
@@ -51,7 +53,8 @@ class \nodoc\ iso _TestEvenlySplitDataElementsWithLessDataElements is UnitTest
     actual = EvenlySplitDataElements(3, 5)
     h.assert_array_eq[USize](expected, actual)
 
-class \nodoc\ iso _TestEvenlySplitDataElementsWithEvenDataElements is UnitTest
+class \nodoc\ iso _TestEvenlySplitDataElementsWithEvenDataElements
+  is pt.UnitTest
   """
   Test splitting elements across x workers where the work can be evenly
   distributed.
@@ -59,7 +62,7 @@ class \nodoc\ iso _TestEvenlySplitDataElementsWithEvenDataElements is UnitTest
   fun name(): String =>
     "fork_join/EvenlySplitDataElements/even"
 
-  fun apply(h: TestHelper) =>
+  fun apply(h: pt.TestHelper) =>
     var expected: Array[USize] = [1;1]
     var actual: Array[USize] val = EvenlySplitDataElements(2, 2)
     h.assert_array_eq[USize](expected, actual)

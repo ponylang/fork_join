@@ -1,7 +1,7 @@
-use "pony_test"
+use pt = "pony_test"
 use "runtime_info"
 
-class \nodoc\ iso _TestEndToEnd is UnitTest
+class \nodoc\ iso _TestEndToEnd is pt.UnitTest
   """
   End-to-end test of simple identity application.
 
@@ -11,7 +11,7 @@ class \nodoc\ iso _TestEndToEnd is UnitTest
   fun name(): String =>
     "fork_join/EndToEnd"
 
-  fun apply(h: TestHelper) =>
+  fun apply(h: pt.TestHelper) =>
     h.long_test(1_000_000_000)
     h.expect_action("collector.finish()")
 
@@ -50,10 +50,10 @@ class \nodoc\ _EndToEndGenerator is Generator[Array[U8] iso]
 
 class \nodoc\ _EndToEndCollector is Collector[Array[U8] iso, Array[U8] val]
   let _collected: Array[U8] = _collected.create()
-  let _helper: TestHelper
+  let _helper: pt.TestHelper
   let _expected: Array[U8] val
 
-  new iso create(helper: TestHelper, expected: Array[U8] val) =>
+  new iso create(helper: pt.TestHelper, expected: Array[U8] val) =>
     _helper = helper
     _expected = expected
 

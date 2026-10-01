@@ -1,7 +1,7 @@
-use "pony_test"
+use pt = "pony_test"
 use "runtime_info"
 
-class \nodoc\ iso _TestCollectorTerminate is UnitTest
+class \nodoc\ iso _TestCollectorTerminate is pt.UnitTest
   """
   Tests that when `terminate` is called by a collector that the job will
   eventually shutdown. We test this by waiting on the collector to receive a
@@ -20,7 +20,7 @@ class \nodoc\ iso _TestCollectorTerminate is UnitTest
   fun name(): String =>
     "fork_join/CollectorTerminate"
 
-  fun apply(h: TestHelper) =>
+  fun apply(h: pt.TestHelper) =>
     h.long_test(1_000_000_000)
     h.expect_action("collector.finish()")
 
@@ -57,9 +57,9 @@ class \nodoc\ _CollectorTerminateCollector is Collector[U8, U8]
   which would cause the test to fail.
   """
   var _results_received: USize = 0
-  let _helper: TestHelper
+  let _helper: pt.TestHelper
 
-  new iso create(helper: TestHelper) =>
+  new iso create(helper: pt.TestHelper) =>
     _helper = helper
 
   fun ref collect(runner: CollectorRunner[U8, U8] ref,
