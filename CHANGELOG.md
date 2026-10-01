@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ### Changed
 
+- Update to work with ponyc 0.74.0 ([PR #66](https://github.com/ponylang/fork_join/pull/66))
 
 ## [0.2.0] - 2026-09-27
 
